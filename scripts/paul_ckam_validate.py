@@ -25,7 +25,7 @@ def main(N=140, t_f=200.0, mode=(4, 2, 0.01)):
     S_grid = island_area_gridcount(f)
     S_pend = island_area_pendulum(f)
     rho = np.linspace(0.0, 1.0, N)
-    th = np.linspace(0.0, 2.0 * np.pi, N)
+    th = np.linspace(0.0, 2.0 * np.pi, N, endpoint=False)
     t0 = time.time()
     tc = detection_map_uv(f, rho, th, t_f=t_f, symmetry=False)
     dt = time.time() - t0
