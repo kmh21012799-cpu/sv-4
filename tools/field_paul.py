@@ -69,6 +69,46 @@ class PaulField:
     def iota(self, psi):
         return self.iota_p * np.asarray(psi, float)
 
+    # ---- converse-KAM ingredients (zeta = time) ------------------------
+    # State (psi=rho, theta); the "time" component V^zeta = 1, so a poloidal
+    # tangent stays poloidal -- exactly as for the KMM V-flow.
+    def V(self, psi, theta, zeta):
+        """(V^psi, V^theta, V^zeta) = (dpsi/dzeta, dtheta/dzeta, 1)."""
+        dpsi, dth = self.rhs(zeta, [psi, theta])
+        return dpsi, dth, 1.0
+
+    def jacobian(self, psi, theta, zeta):
+        """Analytic d(dpsi/dzeta, dtheta/dzeta)/d(psi, theta) at a scalar point."""
+        psi = float(psi)
+        ang = self._m * theta - self._n * zeta
+        s = np.sin(ang); c = np.cos(ang)
+        pb = self.psibar
+        # V^psi = sum e m psi(psi-pb) sin ;  d/dpsi psi(psi-pb) = 2psi-pb
+        dVpsi_dpsi = np.dot(self._e * self._m, s) * (2.0 * psi - pb)
+        dVpsi_dth = np.dot(self._e * self._m * self._m, c) * (psi * (psi - pb))
+        # V^theta = iota' psi + sum e (2psi-pb) cos
+        dVth_dpsi = self.iota_p + np.dot(self._e, c) * 2.0
+        dVth_dth = -np.dot(self._e * self._m, s) * (2.0 * psi - pb)
+        return np.array([[dVpsi_dpsi, dVpsi_dth], [dVth_dpsi, dVth_dth]])
+
+    def metric(self, psi):
+        """Euclidean adapted metric: (rho,theta,zeta) orthogonal with |grad rho|=1
+        (paper: rho_hat x theta_hat . zeta_hat = 1).  grad psi || d/dpsi holds."""
+        return (1.0, 1.0, 1.0)
+
+    def invariant_single(self, psi, theta, zeta=0.0):
+        """K = chi - (n/m) psi : exact field-line invariant for ONE resonance.
+
+        Derived in RECORD_C2; conserved because dK/dzeta = 0 for a single mode.
+        Its level sets give the analytic island (the Paul-coordinate answer key).
+        """
+        if len(self.modes) != 1:
+            raise ValueError("single-resonance invariant only")
+        m, n, eps = self.modes[0]
+        psi = np.asarray(psi, float)
+        return (0.5 * self.iota_p * psi ** 2 - (n / m) * psi
+                + eps * psi * (psi - self.psibar) * np.cos(m * theta - n * zeta))
+
     # ---- island half-width (eq. 5.2) -----------------------------------
     def island_half_width(self, m, n, eps):
         psi_res = n / (m * self.iota_p)

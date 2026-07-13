@@ -136,6 +136,55 @@ def detection_map(field, ygrid, zgrid, t_f=200.0, symmetry=False, nproc=None):
     return np.array(rows)
 
 
+def _row_worker_uv(args):
+    field, v, ugrid, t_f, symmetry, guard = args
+    row = np.full(len(ugrid), np.inf)
+    for iu, u in enumerate(ugrid):
+        if u <= guard or u >= 1.0 - guard:
+            row[iu] = np.nan
+            continue
+        row[iu] = detect_tc(field, float(u), float(v), t_f=t_f, symmetry=symmetry)
+    return row
+
+
+def detection_map_uv(field, rho_grid, theta_grid, t_f=200.0, symmetry=False,
+                     nproc=None, guard=1e-4):
+    """Coordinate-agnostic t_c map over (rho, theta) (Paul coords; rho=first
+    state coord = the direction-field axis, theta = second coord).
+
+    Returns tc[i, j] with i over rho (rows) and j over theta (cols), so that
+    imshow(origin='lower', extent=[th0,th1,rho0,rho1]) plots theta horizontal,
+    rho vertical.  Row-parallel over theta columns... implemented row-per-theta
+    for load balance.
+    """
+    import multiprocessing as mp
+    if nproc is None:
+        nproc = max(1, (os.cpu_count() or 1))
+    tasks = [(field, th, rho_grid, t_f, symmetry, guard) for th in theta_grid]
+    if nproc == 1:
+        cols = [_row_worker_uv(t) for t in tasks]
+    else:
+        with mp.Pool(nproc) as pool:
+            cols = pool.map(_row_worker_uv, tasks)
+    # cols[j] is the rho-column at theta_grid[j]; stack to tc[i_rho, j_theta]
+    return np.array(cols).T
+
+
+def nonexistence_area_uv(tc, rho_grid, theta_grid, t_f, rho_lo=None, rho_hi=None):
+    """Detected area in (rho, theta) = toroidal flux (drho ^ dtheta = dpsi ^ dtheta).
+
+    Optionally restrict to a rho sub-band [rho_lo, rho_hi] (Paul normalises over
+    rho in [0.25, 0.75]).
+    """
+    drho = (rho_grid[-1] - rho_grid[0]) / (len(rho_grid) - 1)
+    dth = (theta_grid[-1] - theta_grid[0]) / (len(theta_grid) - 1)
+    det = np.isfinite(tc) & (tc <= t_f)
+    if rho_lo is not None:
+        mask = (rho_grid >= rho_lo) & (rho_grid <= rho_hi)
+        det = det[mask, :]
+    return float(det.sum()) * drho * dth
+
+
 def nonexistence_area(tc, ygrid, zgrid, t_f):
     """Area of {t_c <= t_f} in symplectic coords = toroidal flux (paper eq. 12).
 
