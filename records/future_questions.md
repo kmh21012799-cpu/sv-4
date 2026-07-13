@@ -42,6 +42,20 @@ None of these are claims; they are open items.
   ∇ψ = ∇ρ is the obvious first choice; the island-centre foliation is the
   refinement.
 
+## Cantori hypothesis (raised by C2 diagnostics — NOT a claim)
+
+- C2 diagnostics showed the m=36 critical-overlap field has chaos **connected**
+  across [1/8, 7/8] (a single orbit spans it by ~10^5 turns) but with **slow
+  transport** — strong cantori (partial barriers), as expected at Chirikov S=1.
+- **Open hypothesis (untested):** converse-KAM detects only the *absence of KAM
+  surfaces*, and cantori are not KAM surfaces, so converse-KAM may be blind to
+  the very structures (cantori) that throttle m=36's transport. If so, that would
+  be a *mechanism* for Paul's claim that converse-KAM cannot distinguish the four
+  fields — and it would predict that a stickiness/regularity diagnostic (WBA) and
+  V_PD, which respond to cantori, *can*. This is exactly the C3 three-axis
+  question. **Do not assert it** until C2 measures t_c/structure and C3 adds V_PD
+  and WBA on the same field.
+
 ## Toward C3 (V_PD vs converse-KAM — Paul's "future publication")
 
 - Implement the effective parallel-diffusion volume `V_PD` (Paul 2022) and

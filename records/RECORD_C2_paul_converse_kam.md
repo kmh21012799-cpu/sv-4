@@ -10,7 +10,8 @@ Outcome A (areas ≈ equal → Paul right), B (areas differ → Paul wrong, *sus
 the code*), and C (areas equal but t_c / spatial structure differ) are **all
 valid results.** **No "discovery" language — observations only.**
 
-> **★ STATUS: preparation (P-1, P-2) complete and reported. C2 body not yet run.**
+> **★ STATUS: preparation (P-1, P-2) done; diagnostics (checkpoint 2) done and
+> reported. C2 body NOT run; grid size NOT yet chosen (pending user decision).**
 
 ---
 
@@ -26,13 +27,14 @@ valid results.** **No "discovery" language — observations only.**
    boundary (where t_c → ∞). So a *single* field's absolute area carries ~±0.5%
    method noise; only **field-to-field differences on the same grid/protocol**
    are robust, and differences below ~0.5% cannot be resolved.
-3. **The four fields are NOT chaos-equivalent (major caveat for 함정 3).** Their
-   *island chains* span the same [1/8, 7/8] by construction (verified), but the
-   *connectivity of the stochastic sea* differs sharply (see P-sanity below):
-   m=4/12 are globally connected across [1/8,7/8]; m=20/36 fragment into
-   partially-connected bands. So if m=36's non-existence area comes out smaller,
-   it may reflect this designed-in structure, **not** converse-KAM "seeing
-   transport." This must be controlled before any A/B/C verdict.
+3. **[UPDATED by diagnostics — the "fragmentation" was a finite-time artifact.]**
+   The prep note that m=20/36 "fragment into partial bands" was WRONG: it came
+   from too-short (3000-turn) orbits. Longer integration (10^5 turns) shows a
+   *single* m=36 orbit spans the full [1/8, 7/8] (see Diagnosis 2 below). The
+   chaos is **connected** across the domain in all four; m=36 just transports
+   *slowly* (cantori). So area alone will not cheaply separate the fields — but
+   for the right reason (connected chaos + KAM destroyed everywhere), which is
+   what makes t_c / spatial structure the discriminating metrics.
 4. **Resonance-count discrepancy with the instruction.** The instruction's P-2
    note says "m=36 has 14 resonances"; the [1/8, 7/8] separatrix condition
    requires *unit-step* n (Δψ=1/m), giving **27** resonances for m=36 (and
@@ -106,6 +108,62 @@ needed.
   location*, not about *transport connectivity*. **This is exactly why C2 must
   report t_c distribution, undetected-fraction, and spatial structure — not area
   alone.**
+
+---
+
+---
+
+## DIAGNOSTICS (checkpoint 2) — done before choosing N or touching the C2 body
+
+### Decision 1: the non-monotone ±0.5% area error → **CASE B (pure discretisation)**
+
+Separating the two error sources on the KMM answer key (analytic invariant lets
+us cell-count the *true* island {Ψ<Ψ_X} directly, with no converse-KAM):
+
+- **The wobble is 100% discretisation.** The true-island cell-count alone
+  reproduces the exact non-monotone scatter — N=90:+0.27%, N=100:−1.25%,
+  N=120:−0.64%, N=130:+0.68%, N=160:+0.08%, N=180:+0.72%, … — and it does **not**
+  shrink with N (still ±0.7% at N=180). It is aliasing of the thin crescent
+  boundary (25–27% of island cells are boundary cells), not convergence.
+  `figures/diag_grid_noise.png`.
+- **converse-KAM physics is exact.** From the saved t_c maps: **0 timeout
+  points** (every island point detects by t_f=200) and **0 false positives**;
+  the converse-KAM area equals the true-island cell-count *to the digit*. So the
+  area error is entirely geometric — Diagnosis 1 (timeout) and Diagnosis 3
+  (integration tolerance) are ruled out; it is Diagnosis 2 (boundary).
+- **It is reducible.** 4×4 sub-cell **offset-averaging** collapses the wobble to
+  **±0.1% at every N** (`diag_grid_noise.png`, orange). Cost is k² extra
+  evaluations — cheap on the analytic KMM island, but 16× on the expensive Paul
+  maps (so for C2 either boundary-only refinement, or a naive-N area carried with
+  a ±0.3–0.5% error bar, or lean on t_c/spatial metrics).
+
+**Resolution (per the case-B playbook):** the area wobble is a real, *bounded,
+geometric* error bar (~±0.5% naive at N≥120, ~±0.1% offset-averaged). C2 area
+comparisons must be stated only outside that bar; where field differences fall
+inside it, report "converse-KAM does not distinguish them at this resolution"
+(a valid result) and defer to the t_c distribution and spatial structure — which
+are far less boundary-sensitive.
+
+### Decision 2: m=36 "fragmentation" → **POSSIBILITY B (cantori); code validated**
+
+- **Amplitudes are exactly critical (Diagnosis 3/4, possibility C ruled out).**
+  All four fields: half-width/(Δψ/2) = 1.000, Chirikov S = 1.000, inner/outer
+  separatrices at exactly ρ = 0.1250 / 0.8750.
+- **The sea is connected; transport is slow (Diagnosis 1, possibility A ruled
+  out).** A single m=36 orbit's cumulative ψ-span grows with time:
+  10³ turns → [0.380,0.566] (w=0.19); 10⁴ → [0.123,0.655] (0.53);
+  **10⁵ → [0.122,0.878] (0.76) = [1/8,7/8].** `figures/diag_m36_span.png`.
+- **Multi-IC confirms one sea (Diagnosis 2).** Seeds 0.20/0.35/0.65/0.80 (20k
+  turns) give overlapping ranges with **union [0.122, 0.878] ≈ [1/8, 7/8]**;
+  the 0.50 seed is trapped only because it sits on the 18/36 resonance O-point.
+- **The earlier "fragmentation" was a finite-time observation error** (3000-turn
+  orbits looked confined) — the same finite-time trap flagged for D1. Corrected.
+
+**Resolution:** m=36 has connected chaos across [1/8, 7/8] with strong cantori
+(expected at S=1). Code is correct; no A/C bug. **NOT claimed here:** the
+downstream idea that "converse-KAM can't see cantori, so it can't separate the
+four" — that is a hypothesis for the C2 body / C3, recorded in
+`future_questions.md`, **not** an assertion.
 
 ---
 
