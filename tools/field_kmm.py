@@ -83,6 +83,39 @@ class KMMField:
         Vphi = np.ones_like(psi)
         return Vpsi, Vth, Vphi
 
+    def jacobian(self, psi, theta, phi):
+        """Analytic Jacobian d(V^psi, V^theta)/d(psi, theta) at a scalar point.
+
+        Used by the converse-KAM variational integration.  f = psi - c, f' = 1.
+        """
+        psi = float(psi)
+        J = np.zeros((2, 2))
+        J[1, 0] = 2.0 * self.w2          # from V^theta = w1 + 2 w2 psi + ...
+        pc = max(psi, 1e-300)
+        for (m, n, eps) in self.modes:
+            ang = m * theta - n * phi + self.zeta
+            s, cth = np.sin(ang), np.cos(ang)
+            p = m / 2.0
+            f = psi - self._c
+            # V^psi = m eps psi^p f sin
+            # dV^psi/dpsi = m eps psi^{p-1} [p f + psi] sin
+            J[0, 0] += m * eps * pc ** (p - 1.0) * (p * f + psi) * s
+            # dV^psi/dtheta = m^2 eps psi^p f cos
+            J[0, 1] += m * m * eps * pc ** p * f * cth
+            # h(psi) = psi^{p-1}[(p+1)psi - 4 p ... ] ; with f=psi-c, [p f + psi] = (p+1)psi - p c
+            #   V^theta pert term = eps h(psi) cos, h = (p+1) psi^p - p c psi^{p-1}
+            #   dV^theta/dpsi = eps h'(psi) cos
+            hp = (p + 1.0) * p * pc ** (p - 1.0) - p * self._c * (p - 1.0) * pc ** (p - 2.0)
+            J[1, 0] += eps * hp * cth
+            # dV^theta/dtheta = -m eps h(psi) sin
+            h = (p + 1.0) * pc ** p - p * self._c * pc ** (p - 1.0)
+            J[1, 1] += -m * eps * h * s
+        return J
+
+    def metric(self, psi):
+        """Diagonal adapted metric (g_psipsi, g_thth, g_phiphi)."""
+        return (1.0 / (2.0 * self.B0 * psi), 2.0 * psi / self.B0, self.R0 ** 2)
+
     def A_phi(self, psi, theta, phi):
         """Covariant A_phi (used for invariant / island geometry)."""
         psi = np.asarray(psi, dtype=float)

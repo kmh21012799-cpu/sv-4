@@ -15,7 +15,8 @@ staged, verifiable steps. **It makes no new-discovery claims.**
   Poincaré-validate the KMM (2023) and Paul (2022) model fields. **Done / PASS.**
 - **C1 — converse-KAM 3D** (`records/RECORD_C1_converse_kam.md`): implement the
   MacKay/KMM converse-KAM test and validate it on the integrable KMM island
-  (known answer).
+  (known answer). **Done — PASS on Fig. 4 (area→S_I, ratio 1.003) and Fig. 5
+  (t_c∝1/√R); PARTIAL on the symmetry-line factor-of-2 (recorded).**
 - C2 / C3 — apply to Paul's critical-chaos fields; implement `V_PD` and compare.
   **Out of scope for now.**
 
