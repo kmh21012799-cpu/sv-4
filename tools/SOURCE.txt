@@ -1,0 +1,33 @@
+Provenance of code in tools/
+=============================
+
+This is a NEW repository (converse-kam-3d).  No code was copied verbatim from
+QUASR or WBA -- those repositories are NOT accessible from this working
+environment (session scope: kmh21012799-cpu/sv-4 only).  Everything here was
+written fresh from the two source papers.
+
+field_kmm.py
+    Written from Kallinikos, MacKay, Martinez-del-Rio, Tigkas, Turnbull,
+    "The converse KAM method for stellarator magnetic fields" (2023),
+    arXiv:2304.09613.  Auxiliary vector field V (Sec. 2), examples (Sec. 4).
+
+field_paul.py
+    Written from Paul, Hudson, Helander,
+    "Heat conduction in an irregular magnetic field. Part 2. ..." (2022),
+    arXiv:2108.06328.  Model Hamiltonian chi (eq. 4.1), field (eq. 4.2),
+    island width (eq. 5.2), critical-overlap fields (Sec. 7).
+
+kmm_island.py
+    Semi-analytic island area for the integrable KMM example 1, derived here
+    from the exact single-resonance invariant Psi = -n psi - m A_phi.
+
+residue.py
+    Greene's residue R = (2 - tr M)/4 via variational (tangent-map) integration.
+    The instruction asked to PORT the residue routine from the QUASR pipeline
+    (validated to 3 digits on device 104183).  That repository is NOT in scope
+    here, so residue.py is an INDEPENDENT re-implementation of the standard
+    Greene construction (Greene, J. Math. Phys. 20, 1183 (1979)).  It is
+    validated internally against the analytically known O/X points of the
+    integrable KMM example 1 (elliptic 0<R<1, hyperbolic R<0, R_O ~ eps at
+    small eps); see RECORD_C0_fields.md.  If/when the QUASR routine becomes
+    available, cross-check the two.
