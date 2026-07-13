@@ -86,7 +86,77 @@ def dig_psi(field, rho0, theta0, n_periods=1000, **kw):
     return wba_point(field, rho0, theta0, n_periods=n_periods, **kw)["dig_psi"]
 
 
-# ---- parallel grid map ---------------------------------------------------
+# ---- vectorised fixed-step RK4 over many ICs -----------------------------
+# WBA needs uniform sampling anyway (weight g(zeta/tau)), so a fixed step is
+# natural and lets us integrate MANY orbits at once (one vectorised RHS per
+# step). Chaotic orbits don't need a faithful trajectory (we only need A!=B);
+# regular orbits set the noise floor, which the step count controls.
+def wba_dig_rk4(field, rho0, theta0, n_periods=1000, steps_per_period=16):
+    """Vectorised WBA over IC arrays (rho0, theta0). Returns dict of arrays:
+    dig_psi, dig_pos (=min(dig_x,dig_y)). Fixed-step RK4 on the augmented state
+    [rho, theta, W1(psi,x,y), W2(psi,x,y)]; A/B over [0,tau],[tau,2tau]."""
+    rho0 = np.atleast_1d(np.asarray(rho0, float))
+    theta0 = np.atleast_1d(np.asarray(theta0, float))
+    n_ic = rho0.size
+    tau = 2.0 * np.pi * n_periods
+    m = field._m[:, None]; n = field._n[:, None]; e = field._e[:, None]
+    ip = field.iota_p; pb = field.psibar
+
+    def deriv(zeta, Y):
+        rho = Y[0]; th = Y[1]
+        ang = m * th[None, :] - n * zeta                     # (nmode, n_ic)
+        s = np.sin(ang); c = np.cos(ang)
+        pf = rho * (rho - pb)
+        drho = np.sum(e * m * s, axis=0) * pf
+        dth = ip * rho + (2.0 * rho - pb) * np.sum(e * c, axis=0)
+        g1 = gbump(zeta / tau); g2 = gbump((zeta - tau) / tau)
+        cth = np.cos(th); sth = np.sin(th)
+        dY = np.empty_like(Y)
+        dY[0] = drho; dY[1] = dth
+        dY[2] = g1 * rho; dY[3] = g1 * rho * cth; dY[4] = g1 * rho * sth
+        dY[5] = g2 * rho; dY[6] = g2 * rho * cth; dY[7] = g2 * rho * sth
+        return dY
+
+    Y = np.zeros((8, n_ic))
+    Y[0] = rho0; Y[1] = theta0
+    dz = 2.0 * np.pi / steps_per_period
+    nsteps = int(round(2.0 * tau / dz))
+    zeta = 0.0
+    for _ in range(nsteps):
+        k1 = deriv(zeta, Y)
+        k2 = deriv(zeta + 0.5 * dz, Y + 0.5 * dz * k1)
+        k3 = deriv(zeta + 0.5 * dz, Y + 0.5 * dz * k2)
+        k4 = deriv(zeta + dz, Y + dz * k3)
+        Y = Y + (dz / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4)
+        zeta += dz
+    A = Y[2:5] / tau; B = Y[5:8] / tau        # (3, n_ic): psi, x, y
+    d = np.abs(A - B)
+    absdig = -np.log10(np.maximum(d, 1e-300))
+    scale = 0.5 * (np.abs(A) + np.abs(B))
+    reldig = -np.log10(np.maximum(d / np.maximum(scale, 1e-300), 1e-300))
+    dig = np.maximum(absdig, reldig)          # (3, n_ic)
+    return dict(dig_psi=dig[0], dig_x=dig[1], dig_y=dig[2],
+                dig_pos=np.minimum(dig[1], dig[2]))
+
+
+def dig_map_rk4(field, rho_grid, theta_grid, n_periods=1000, steps_per_period=16,
+                which="dig_psi", batch=400, guard=1e-4):
+    """Fast dig map over (rho,theta) using the vectorised RK4 (batched)."""
+    R, T = np.meshgrid(rho_grid, theta_grid, indexing="ij")   # [i_rho, j_theta]
+    shape = R.shape
+    rf = R.ravel(); tf = T.ravel()
+    valid = (rf > guard) & (rf < 1.0 - guard)
+    out = np.full(rf.size, np.nan)
+    idx = np.nonzero(valid)[0]
+    for s in range(0, idx.size, batch):
+        js = idx[s:s + batch]
+        d = wba_dig_rk4(field, rf[js], tf[js], n_periods=n_periods,
+                        steps_per_period=steps_per_period)
+        out[js] = d[which]
+    return out.reshape(shape)
+
+
+# ---- parallel grid map (adaptive, reference only) ------------------------
 def _row(args):
     field, th, rhos, n_periods, guard, which = args
     out = np.full(len(rhos), np.nan)

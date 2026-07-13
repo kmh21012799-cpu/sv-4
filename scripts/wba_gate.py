@@ -15,17 +15,18 @@ import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "tools"))
 from field_paul import PaulField                                  # noqa: E402
-from wba import dig_map                                           # noqa: E402
+from wba import dig_map_rk4                                       # noqa: E402
 FIG = os.path.join(os.path.dirname(__file__), "..", "figures")
 DATA = os.path.join(os.path.dirname(__file__), "..", "data")
 
 
-def main(N=72, n_periods=300):
+def main(N=120, n_periods=1000, M=16):
     f = PaulField([(4, 2, 0.01)])       # integrable single resonance, island ~[0.4,0.6]
     rho = np.linspace(0.0, 1.0, N)
     th = np.linspace(0.0, 2.0 * np.pi, N, endpoint=False)
     t0 = time.time()
-    dig = dig_map(f, rho, th, n_periods=n_periods, which="dig_psi")
+    dig = dig_map_rk4(f, rho, th, n_periods=n_periods, steps_per_period=M,
+                      which="dig_psi")
     dt = time.time() - t0
     np.savez(os.path.join(DATA, "wba_gate.npz"), dig=dig, rho=rho, th=th)
     print(f"single-resonance gate: N={N}, T={n_periods}, {dt:.0f}s")
@@ -49,7 +50,7 @@ def main(N=72, n_periods=300):
 if __name__ == "__main__":
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument("--N", type=int, default=72)
-    ap.add_argument("--T", type=int, default=300)
+    ap.add_argument("--N", type=int, default=120)
+    ap.add_argument("--T", type=int, default=1000)
     args = ap.parse_args()
     main(N=args.N, n_periods=args.T)
