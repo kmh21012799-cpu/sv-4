@@ -10,8 +10,8 @@ Outcome A (areas ≈ equal → Paul right), B (areas differ → Paul wrong, *sus
 the code*), and C (areas equal but t_c / spatial structure differ) are **all
 valid results.** **No "discovery" language — observations only.**
 
-> **★ STATUS: preparation (P-1, P-2) done; diagnostics (checkpoint 2) done and
-> reported. C2 body NOT run; grid size NOT yet chosen (pending user decision).**
+> **★ STATUS: preparation + diagnostics done; C2-B gate PASSED; C2-C four-field
+> campaign run at N=160, t_f=200. Results + interpretation below.**
 
 ---
 
