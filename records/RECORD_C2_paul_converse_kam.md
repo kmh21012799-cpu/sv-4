@@ -42,10 +42,18 @@ valid results.** **No "discovery" language — observations only.**
    reproduces ρ=1/8, 7/8 exactly (verified). Flagging the mismatch;
    code-suspicion default says re-check against the paper's exact mode list in
    C2-B.
-5. **Paul Jacobian/metric not yet built.** The P-2 cost is estimated from the
-   plain field-line integration × a 2.5 variational factor (conservative,
-   full-t_f). The actual converse-KAM-on-Paul setup (direction field, metric,
-   single-resonance validation) is C2-B.
+5. **Euclidean metric is a modelling choice.** Paul's (ρ,θ,ζ) are orthogonal
+   with |∇ρ|=1, so ξ=∂ρ ∥ ∇ρ and g=diag(1,1,1) gives the correct sign properties
+   (λ(ξ)>0, λ(V)=0); it is validated on the *integrable* single resonance (where
+   condition (ii)/λ is auto-satisfied by monotone rotation, so the test is
+   insensitive to the metric). For the chaotic fields the metric enters condition
+   (ii); a different orthogonal metric could shift a few near-threshold points.
+   The core result (100% in [0.25,0.75], flat t_c) is far from that margin.
+6. **The "27 vs 14 resonances" mismatch stands.** Our unit-step set reproduces
+   ρ=1/8,7/8 and Chirikov S=1.000 exactly, so it is internally correct; but it
+   differs from the instruction's "14". If the paper's m=36 used a different mode
+   list, absolute numbers would move (the *qualitative* verdict — indistinguish-
+   able core, flat t_c — is robust to this).
 
 ---
 
@@ -167,22 +175,99 @@ four" — that is a hypothesis for the C2 body / C3, recorded in
 
 ---
 
-## Plan for the C2 body (not yet executed)
+## C2-B — Paul-coordinate setup + single-resonance GATE (PASSED)
 
-- **C2-A:** implement/verify Paul direction field ξ (∇ρ; check ∇ψ ∥ ∂ψ in the
-  orthogonal (ρ,θ,ζ) metric) and Jacobian; **validate on a single-resonance Paul
-  field against the analytic W_{m,n} island area** (the Paul-coordinate answer
-  key) before touching the four chaotic fields.
-- **C2-B/C:** run all four at N=160, t_f=200 (with a t_f-doubling check on the
-  undetected fraction — 함정 2); report **area (normalised over ρ∈[0.25,0.75],
-  as Paul does), median t_c, t_c histogram (overlaid), timeout fraction, and
-  detection maps**; place beside Paul's V_PD and ΔT read off Fig. 5.
-- **Verdict A/B/C** stated with the precision caveat (LIMITATION 2) and the
-  connectivity caveat (LIMITATION 3) explicit.
+converse-KAM in Paul coordinates (ζ = time; state (ρ=ψ, θ); tangent stays
+poloidal because V^ζ = 1). Ingredients: **ξ = ∂ρ** (= ∇ρ, since the (ρ,θ,ζ)
+coordinates are orthogonal with |∇ρ| = 1), **Euclidean metric** g = diag(1,1,1),
+**β(η,ξ) = −η^θ**, and **λ(η) = η^ρ − V^ρ g(V,η)/g(V,V)** — the exact analogues
+of the KMM construction (`tools/field_paul.py`, `tools/converse_kam.py`).
 
-## Reproduce (preparation)
+**Gate.** Single-resonance (m=4, n=2, ε=0.01) is integrable (invariant
+K = χ − (n/m)ψ conserved to 2.5e-10). converse-KAM run on it (N=140) detects
+**exactly** the analytic island {K < K_X}: **2488 cells detected = 2488 cells
+inside, 0 false positives, 0 missed** (`figures/paul_single_ckam.png`). The
+converse-KAM area equals the same-grid island cell-count to the digit (0.8091);
+the 1.5% vs the fine answer key (0.7973) is pure N=140 discretisation of this
+wider geometry. **The Paul-coordinate converse-KAM reproduces the analytic
+island — setup validated.**
+
+## C2-C — the four critical-overlap fields (N=160, t_f=200)
+
+t_f-convergence (N=60, t_f=200/400/800): area changes by ≤0.5% and the
+undetected fraction is flat → **t_f=200 sufficient; the undetected points are
+genuine non-detection, not timeout** (함정 2 discharged — undetected is *not*
+read as "KAM present": raising t_f four-fold does not detect them).
+
+| field | # res | area (%domain) | core ρ∈[0.25,0.75] | undetected % | t_c median | t_c IQR |
+|---|---|---|---|---|---|---|
+| m=4  | 3  | 65.9 ± ~1 | **100.0%** | 33.7 | 18.9 | [14.4, 29.8] |
+| m=12 | 9  | 71.9 ± ~1 | **99.9%**  | 27.6 | 19.5 | [14.5, 30.6] |
+| m=20 | 15 | 73.4 ± ~1 | **100.0%** | 26.1 | 19.4 | [14.8, 34.2] |
+| m=36 | 27 | 74.0 ± ~1 | **100.0%** | 25.5 | 20.5 | [14.2, 33.6] |
+
+(Error bar ~±1%: the single-resonance gate showed ckam==cell-count exactly, so
+the area uncertainty is the geometric discretisation measured there / in the KMM
+scan.) Figures: `paul_ckam_maps.png` (detection maps), `paul_tc_hist.png`
+(overlaid t_c), `paul_ckam_summary.png`.
+
+**Paul's transport ordering (Fig. 5, read qualitatively — exact numbers are
+figure-only, not digitised here):** the effective parallel-diffusion volume
+V_PD *decreases* with m, and the temperature flattening (heat leak) is strongest
+at m=4, weakest at m=36 (m=36 insulates). i.e. transport ordering
+m=4 > m=12 > m=20 > m=36.
+
+### What converse-KAM sees (three readings, all pointing the same way)
+
+1. **Paul's normalisation band ρ∈[0.25,0.75]: 100.0% non-existence for ALL four**
+   (m=12 is 99.9%). In the transport-relevant core, converse-KAM gives the
+   *identical* verdict for every field — **it cannot distinguish them.**
+2. **t_c distributions are near-identical** — medians 18.9/19.5/19.4/20.5, the
+   overlaid histograms lie on top of each other (`paul_tc_hist.png`). So the
+   "결말 C" escape hatch (area equal but t_c differs) does **not** apply: t_c
+   carries no separating signal either.
+3. **Full-domain area does differ** (65.9→74.0%) — but it (a) **saturates by
+   m=12** (m=12/20/36 within ~2%, near the error bar), (b) is driven by the
+   *island-core / outer-edge* geometry (the detection maps show the interior
+   [1/8,7/8] fully covered for all four; the difference is m=4's large regular
+   island cores + coarse scalloped edge, i.e. the §4.2 island-ambiguity, not the
+   chaotic sea), and (c) is **ANTI-correlated with transport** — m=4 has the
+   *smallest* non-existence area yet the *largest* transport (`paul_ckam_summary.png`).
+
+### Verdict — essentially outcome A (Paul's prediction holds)
+
+**converse-KAM does not distinguish the four fields in any transport-relevant
+way.** The core-band verdict is identical (100% for all); the t_c distributions
+are identical; the only measurable difference (full-domain area) saturates by
+m=12 and points *opposite* to transport, tracing island-core area rather than
+the chaotic transport that V_PD measures. This is the **first direct test** of
+Paul's 2022 statement that converse-KAM would not separate these fields, and it
+confirms it.
+
+**Code-suspicion check (함정 3).** The one difference is *not* the dangerous
+direction (m=4 came out with the *smallest* area, not the largest), so it does
+not spuriously imply "converse-KAM predicts transport." It is consistent with
+(i) the validated single-resonance gate, (ii) the C1 island-ambiguity limitation
+(§4.2), and (iii) exactly-critical amplitudes (Chirikov S=1.000, separatrices at
+1/8,7/8, verified in P-sanity). No result here is called a "discovery" — these
+are observations.
+
+**Why (hypothesis, NOT asserted — for C3):** converse-KAM detects only the
+absence of KAM surfaces; the structure that throttles m=36's transport is
+*cantori* (partial barriers, confirmed in Decision 2), which are not KAM
+surfaces and to which converse-KAM — and its t_c — are blind. A stickiness
+diagnostic (WBA) and V_PD respond to cantori; converse-KAM does not. This is the
+C3 three-axis question and is left to `future_questions.md`.
+
+## Reproduce
 
 ```
-python3 scripts/precision_c2.py sanity p2cost   # boundary/connectivity + cost
-python3 scripts/precision_c2.py p1              # KMM grid convergence
+python3 scripts/precision_c2.py sanity p2cost p1      # prep: sanity + cost + grid conv
+python3 scripts/diagnose_c2.py                        # checkpoint-2 diagnostics
+python3 scripts/paul_ckam_validate.py --N 140         # C2-B gate (single resonance)
+for k in m4 m12 m20 m36; do
+  python3 scripts/paul_ckam_campaign.py $k --N 160 --tf 200   # C2-C main
+done
+python3 scripts/paul_ckam_analysis.py table hist maps conv    # table + figures
+python3 scripts/paul_summary_fig.py                            # summary figure
 ```

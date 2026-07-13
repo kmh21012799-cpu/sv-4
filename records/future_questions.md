@@ -47,14 +47,17 @@ None of these are claims; they are open items.
 - C2 diagnostics showed the m=36 critical-overlap field has chaos **connected**
   across [1/8, 7/8] (a single orbit spans it by ~10^5 turns) but with **slow
   transport** — strong cantori (partial barriers), as expected at Chirikov S=1.
-- **Open hypothesis (untested):** converse-KAM detects only the *absence of KAM
-  surfaces*, and cantori are not KAM surfaces, so converse-KAM may be blind to
-  the very structures (cantori) that throttle m=36's transport. If so, that would
-  be a *mechanism* for Paul's claim that converse-KAM cannot distinguish the four
-  fields — and it would predict that a stickiness/regularity diagnostic (WBA) and
-  V_PD, which respond to cantori, *can*. This is exactly the C3 three-axis
-  question. **Do not assert it** until C2 measures t_c/structure and C3 adds V_PD
-  and WBA on the same field.
+- **Open hypothesis (still NOT asserted):** converse-KAM detects only the
+  *absence of KAM surfaces*, and cantori are not KAM surfaces, so converse-KAM is
+  likely blind to the very structures (cantori) that throttle m=36's transport.
+- **C2 result is CONSISTENT with it** (RECORD_C2): converse-KAM gives an
+  identical verdict for all four fields in Paul's core band (100% non-existence),
+  identical t_c distributions, and a full-domain-area difference that runs
+  *opposite* to transport — i.e. it does not track V_PD, exactly as it would if
+  it were blind to the transport-controlling cantori. **This is consistency, not
+  proof of the mechanism.** The mechanism claim needs C3: add V_PD and a
+  stickiness diagnostic (WBA) on the *same* field and show they separate what
+  converse-KAM cannot. Only then is it more than a hypothesis.
 
 ## Toward C3 (V_PD vs converse-KAM — Paul's "future publication")
 
