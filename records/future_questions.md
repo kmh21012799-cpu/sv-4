@@ -1,91 +1,64 @@
-# future_questions.md
+# Future Questions
 
-Deferred questions raised by C0/C1. **Kept out of scope on purpose** — recording
-them so they are not silently dropped, and so the C2/C3 work has a starting list.
-None of these are claims; they are open items.
+프로젝트(C0–C3b v2)가 답한 것과, 의도적으로 **답하지 않은** 것. 어느 것도 주장이 아니다.
 
-## Directly owed follow-ups (verification debt)
+**답한 것:** converse-KAM(위상)도 WBA(동역학)도 Paul의 네 임계 겹침 자기장을 구분하지
+못하고, V_PD(수송)와 ΔT는 구분한다 (C2/C3a/C3b v2). Paul(2022)이 "향후 논문"으로 남긴
+converse-KAM vs V_PD 비교를 완성했고, κ⊥→0에서 둘이 일치하리라는 Paul의 기대는 확인되지
+않았다 (converse-KAM이 100% 포화 → 상관을 정의할 분산이 없음).
 
-- **Port / cross-check the QUASR residue routine.** `tools/residue.py` is an
-  independent re-implementation (QUASR not in session scope). When QUASR is
-  available, cross-check R_O, R_X to 3 digits on the KMM (2,1) chain, and
-  confirm the device-104183 pipeline agrees.
-- **Pixel-level comparison to the source figures.** C0/C1 match Fig. 4/5/6
-  *structurally* and *in trend*. Overlaying the actual published figures would
-  turn "qualitative match" into a quantitative one.
-- **`t_c ~ (π/2)T/√R` constant.** Measured min-`t_c` runs ~0.75–0.95 of the
-  asymptotic estimate and the ratio drifts with ε (pendulum approximation
-  degrading). Worth deriving the exact prefactor and the leading correction.
+---
 
-## The island/chaos indistinguishability (the crux for C3)
+## ★ 이 프로젝트가 열어놓은 것
 
-- **converse-KAM with ξ = ∇ψ cannot separate "torus of another class (island
-  interior)" from "chaos"** — both are flagged non-existent (paper §4.2, and
-  reproduced here: in the integrable example 1 the *island interior* is flagged,
-  with no chaos present). The paper's proposed fix is a **foliation built on the
-  island's elliptic field-line centre** instead of the radial ∇ψ. Implementing
-  that alternate direction field would let converse-KAM distinguish island tori
-  from chaotic non-existence.
-- **This is exactly the axis on which converse-KAM and WBA are expected to
-  disagree**: converse-KAM marks an island as "dead" (no radial torus), a
-  regularity diagnostic marks it "alive" (regular motion). The disagreement set
-  *is* the island set. Quantifying that overlap/disagreement is a C3 question,
-  **not touched here.**
+### 1. cantori 가설 — 미증명
+**★ converse-KAM이 cantori를 못 보기 때문에 실패하는가?**
 
-## Toward C2 (apply to Paul's critical-chaos fields)
+관찰: m=36의 카오스는 연결되어 있으나 전송이 10⁵ 회전을 요구한다(10³ 회전에서 폭 0.19).
+cantori 병목의 서명이다. **그러나 증명되지 않았다.**
+**★ 검정 방법: cantori의 turnstile flux를 직접 재고 V_PD와 비교.**
+(Meiss & Ott 1986의 Markov tree, 또는 MacKay-Meiss-Percival 1984.)
 
-- Run converse-KAM on `paul_m4/m12/m20/m36`. Nobody has. Expected: the
-  non-existence region grows with m even as transport (heat leak) falls — the
-  "broken ≠ leaky" story. Needs the Paul-field Jacobian + adapted metric
-  (analogue of what was added for KMM).
-- Which direction field ξ is natural for the Paul geometry (ρ,θ,ζ orthogonal)?
-  ∇ψ = ∇ρ is the obvious first choice; the island-centre foliation is the
-  refinement.
+### 2. 섬 중심 foliation — KMM §5의 제안
+**★ 섬의 elliptic field line 중심 foliation을 쓰면
+converse-KAM이 섬과 카오스를 구분할 수 있다.**
 
-## Cantori hypothesis (raised by C2 diagnostics — NOT a claim)
+**★ 그러면 C3a의 L자형 산점도(두 지표가 섬에서 갈림)가 해소되고, 위상 축이 완성된다.**
+아직 안 했다. 지금은 radial ξ=∇ψ라서 섬 내부를 "비존재(죽음)"로만 표시한다.
 
-- C2 diagnostics showed the m=36 critical-overlap field has chaos **connected**
-  across [1/8, 7/8] (a single orbit spans it by ~10^5 turns) but with **slow
-  transport** — strong cantori (partial barriers), as expected at Chirikov S=1.
-- **Open hypothesis (still NOT asserted):** converse-KAM detects only the
-  *absence of KAM surfaces*, and cantori are not KAM surfaces, so converse-KAM is
-  likely blind to the very structures (cantori) that throttle m=36's transport.
-- **C2 result is CONSISTENT with it** (RECORD_C2): converse-KAM gives an
-  identical verdict for all four fields in Paul's core band (100% non-existence),
-  identical t_c distributions, and a full-domain-area difference that runs
-  *opposite* to transport — i.e. it does not track V_PD, exactly as it would if
-  it were blind to the transport-controlling cantori. **This is consistency, not
-  proof of the mechanism.**
-- **C3a result STRENGTHENS the consistency but is still not proof** (RECORD_C3a):
-  WBA (core, h=ψ) *also* fails to distinguish the four fields — same null as
-  converse-KAM — and its apparent m=36 signal at short T is a finite-time
-  artifact. And WBA vs converse-KAM are only weakly correlated (Spearman ≈ −0.2),
-  splitting precisely on islands. So *two* topological/regularity axes miss what
-  V_PD sees. **The mechanism claim still needs C3b:** implement V_PD on the same
-  fields and show it separates them where these two axes cannot. Only then is the
-  cantori-blindness story more than a hypothesis. (Caveat: WBA was tested with
-  h=ψ in the core; a stickiness-tuned observable or the full domain might behave
-  differently — see RECORD_C3a limitations.)
+### 3. ★ 왜 V_PD만 보는가 — 메커니즘
+**★ 확립된 것:** V_PD는 온도장을 풀고, 온도장은 κ⊥를 통해 플라즈마 상태를 담는다.
+converse-KAM/WBA는 자기장만 본다.
+**★ 그러나 "정확히 무엇이 m=4와 m=36을 가르는가"는 아직 모른다.**
 
-## Toward C3 (V_PD vs converse-KAM — Paul's "future publication")
+**★ 후보:**
+- cantori의 강도 (turnstile flux)
+- 섬 크기 (m=4의 섬이 훨씬 크다 — 큰 섬이 열을 더 새게 한다)
+- **★ Paul이 제시한 것: ε² m² ~ κ⊥ (섬 지배) vs ε³ m⁴ ~ κ⊥ (카오스 지배)**
 
-- Implement the effective parallel-diffusion volume `V_PD` (Paul 2022) and
-  compare, in the *same* field, with the converse-KAM non-existence volume, in
-  the small-perpendicular-diffusion limit Paul names. Then add a regularity
-  diagnostic (WBA) as the third axis.
-- Open: does `V_PD` agree with the converse-KAM volume, the island-resolved
-  version, or neither? The island/chaos distinction above is likely where the
-  three metrics separate.
+### 4. 유한 β
+**★ 이 프로젝트는 전부 주어진 자기장에서의 분석이다.**
+**★ 압력이 자기장을 바꾸는 문제(유한 β)는 HINT이 필요하다.** 히로시마.
 
-## Numerical / method items
+---
 
-- **Symmetry-line over-sampling (Thm 3.2).** θ=0 passes through every primary
-  island's elliptic point, so it over-represents islands and cannot estimate
-  area — confirmed here. Area must come from the 2-D grid (Thm 3.1). This is the
-  same θ₀=0 trap seen before (D1/B2). Any future speed-up via symmetry must keep
-  a 2-D grid for area.
-- **`killends` extension** (orbits leaving the domain) — left for future work by
-  the paper; not implemented.
-- **Guiding-centre extension** — not implemented (future work).
-- Adaptive grid refinement near separatrices would sharpen the area estimate at
-  fixed cost (t_c → ∞ at the separatrix makes the boundary the slowest part).
+## 도구 정밀도 / 방법
+
+5. **격자 오프셋 평균** (±0.1%까지) — 비용 16배. 섬 경계 이산화 요동(함정 ①)을 억제.
+
+6. **C3a의 T 수렴을 더 밀 것.** m=4가 T=5000에서 아직 오르고 있다 (1.05 → 1.46).
+   T=10⁴, 10⁵에서는? (다만 잔여 차이가 "섬 크기"로 설명되므로 수송 신호가 아닐 가능성이 높다.)
+
+7. **κ⊥ → 0 수렴.** 네 V_PD는 κ⊥=1e-6에서 아직 분리(0.897→0.423)되어 있고, 1로 수렴하는
+   것은 더 작은 κ⊥에서다. κ⊥≤1e-7이 필요하나 AMG가 이미 한계(m=36 1e-6에서 2000-iter cap,
+   residual 1e-6). field-aligned preconditioner가 있어야 가능.
+
+8. **graded converse-KAM 관측량.** 이진 비존재는 코어에서 100% 포화 → 분산 0 → 상관 정의
+   불가. "살아남은 최대 불변집합" 또는 "torus까지 거리" 같은 등급형 위상 관측량이라면
+   포화된 이진이 못 하는 상관을 볼 수 있다 — Paul의 소-κ⊥ 일치 기대를 실제로 검정하는 길.
+
+9. **converse-KAM "killends" 확장** (도메인을 떠나는 궤도) — KMM이 향후 과제로 남김. 미구현.
+
+10. **토로이달 geometry.** 아직 유클리드 (ρ,θ,ζ) slab — C2/C3a와 같은 선택이며 Paul의
+    상수-Jacobian metric에서 부피 원소는 균일(R-weighting이 V_PD를 <0.05% 바꿈). 연산자
+    자체의 완전한 토로이달 metric은 미검증.

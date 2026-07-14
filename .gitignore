@@ -1,6 +1,13 @@
 __pycache__/
 *.pyc
-data/*.npz
 .ipynb_checkpoints/
+consistency/**/__pycache__/
 data/*.npz
 data/*.log
+results/*.log
+results/*.npz
+
+# ★ Grid data is committed on purpose (reproducibility — see SOURCE.txt).
+#   Never ignore it. A lost grid is what forced the C3b reimplementation.
+!results/grid/
+!results/grid/*.npz
