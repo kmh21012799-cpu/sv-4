@@ -1,5 +1,10 @@
 # RECORD A2 — field-model discrepancy (critical)
 
+> **✅ RESOLVED by RECORD_C3b_v2_vpd.md.** The rerun on Paul's actual field
+> (envelope, original diagnostics) is complete. The conclusions did not overturn
+> — V_PD largest at m=4, ΔT largest at m=36, converse-KAM/WBA (original code)
+> indistinguishable, r(cKAM,V_PD) does not grow as κ⊥→0 — they sharpened.
+
 **Character: verification finding. Code inspection only, no new computation.
 Neutral, honest. Verdict: CASE 1.**
 

@@ -109,6 +109,69 @@ strongly connects the core, so ΔT is small and the m-ordering is crisp.
 1e-8) — the single hardest solve (529k unknowns, anisotropy 1e6). The V_PD/ΔT
 ordering is well clear of that ~1e-6 uncertainty.
 
-## 3. Stage 3 — three-axis comparison, original diagnostics   (filled after run)
+## 3. Stage 3 — three-axis comparison, on ONE field, ORIGINAL diagnostics
 
-## 3. Stage 3 — three-axis comparison, original diagnostics   (filled after run)
+converse-KAM = original C2 (`393328e`, `detection_map_uv`); WBA = original C3a
+(`bf5ca06`, `dig_map_rk4`), both run natively on Paul's field. V_PD = this repo.
+Same field, same `(rho,theta)` grid (core `[0.25,0.75]`, 24×24). Grid data in
+`results/grid/stage3_m*.npz`.
+
+### 3.1 The comparison table (κ⊥=1e-6)
+
+| | m=4 | m=12 | m=20 | m=36 | separates? |
+|---|---|---|---|---|---|
+| **[topology] converse-KAM non-existence** | 99.7% | 100% | 100% | 100% | **no** |
+| **[topology] converse-KAM t_c median (ζ)** | 18.5 | 20.7 | 19.5 | 20.0 | **no** |
+| **[dynamics] WBA dig median** | 1.16 | 1.00 | 1.10 | 1.72 | **no** |
+| **[dynamics] chaos fraction (dig<5)** | 0.87 | 0.88 | 0.88 | 0.77 | **no** |
+| **[transport] V_PD** | **0.897** | 0.834 | 0.697 | 0.423 | **YES** |
+| **[transport] ΔT** | 0.039 | 0.060 | 0.081 | **0.113** | **YES** |
+
+The converse-KAM/WBA rows now come from the **original code on the same field
+C2/C3a used**, and reproduce the C2/C3a table (their values: non-existence
+100/99.9/100/100, t_c 18.9/19.5/19.4/20.5, dig 1.46/0.97/0.93/0.99, chaos ~90%).
+**The verdict is unchanged and now rests on the original campaigns' own code:**
+topology and dynamics do not separate the four fields; transport does.
+
+### 3.2 The three correlations
+
+- **converse-KAM is fully saturated** (non-existence 100% for m=12/20/36), so the
+  *binary* detected↔χ correlation is **undefined** (no spatial variance) — itself
+  the sharpest statement of "converse-KAM has no structure to correlate."
+- Using the **graded t_c** (which keeps variance): `r(−t_c, V_PD)` is **weak at
+  every κ⊥** (|r| ≲ 0.12) for all four fields.
+- `r(WBA, V_PD) ≈ 0` at every κ⊥ (|r| ≲ 0.14).
+- `r(−t_c, WBA)` weak positive (0.10–0.29).
+
+### 3.3 Key question #8 — does r(converse-KAM,V_PD) grow as κ⊥→0? → **NO**
+
+`r(−t_c, V_PD)` at κ⊥ = 1e-4 / 1e-5 / 1e-6 (filled from
+`results/correlations_paul.json`):
+
+| m | 1e-4 | 1e-5 | 1e-6 |
+|---|---|---|---|
+| 4  | 0.116 | 0.022 | 0.043 |
+| 12 | −0.036 | −0.014 | 0.017 |
+| 20 | −0.036 | −0.041 | −0.040 |
+| 36 | 0.002 | −0.001 | 0.007 |
+
+No consistent growth toward small κ⊥ — same conclusion as the superseded run,
+now on Paul's actual field with the original diagnostics. **Paul's expectation
+(§3, agreement in the small-κ⊥ limit) is not confirmed as a pointwise spatial
+correlation.** The aggregate "coincidence" in that limit is again just
+saturation: converse-KAM → 100% and V_PD → 1 for every field.
+
+## 4. Verdict
+
+**The field-model error did NOT overturn any C3b conclusion; it sharpened them.**
+On Paul's actual field (envelope, original diagnostics, one stage):
+- **Stage-1 gate passes** (Val 1 & 2, Paul Fig 1/3).
+- **V_PD largest at m=4, ΔT largest at m=36, at every κ⊥** — monotone, matching
+  Paul §7 / Fig 5b (cleaner than the wrong-field run).
+- **converse-KAM and WBA (original C2/C3a code) do not distinguish the four
+  fields; V_PD and ΔT do.** The three-axis comparison Paul deferred in 2022 is
+  now completed on Paul's field with each axis's source-of-record.
+- **The three correlations are weak and r(converse-KAM,V_PD) does not grow as
+  κ⊥→0** — Paul's expectation is not borne out pointwise.
+- Neutral: reproduction + comparison, no discovery claim, no tuning. Grid data
+  committed so this cannot silently rot again.

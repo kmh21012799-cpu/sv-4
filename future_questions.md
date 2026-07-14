@@ -1,35 +1,36 @@
-# future_questions.md — items isolated out of C3b
+# future_questions.md — items isolated out of C3b (updated after the v2 rerun)
 
-These are questions raised but deliberately **not** answered in C3b, to keep the
-record to reproduction + comparison. None is a claim.
+These are questions raised but deliberately **not** answered, to keep the record
+to reproduction + comparison. None is a claim.
 
-1. **Toroidal geometry.** C3b uses a reduced slab. Does the ΔT ordering
-   (m=36 insulates most) survive in a real toroidal annulus with `|B|` variation
-   and a genuine `B·∇` operator? Paul's absolute numbers live there.
+**RESOLVED by the v2 rerun (RECORD_C3b_v2_vpd.md):**
+- *Field model.* C3b originally used a constant-amplitude field missing Paul's
+  `psi(psi−psibar)` envelope. Redone on Paul's actual field (original code); the
+  conclusions held and sharpened.
 
-2. **The `kperp→0` convergence of the four fields.** Within `[1e-4,1e-6]` the
-   four V_PD do not converge (spread 0.25→0.60→0.59). At what `kperp` do they
-   actually merge toward 1, and does the *ordering* persist all the way down?
-   Needs `kperp ≤ 1e-7` (anisotropy ≥1e7; AMG iteration counts already ~1800 at
-   1e-6).
+**Still open:**
 
-3. **Why is V_PD's χ organised by poloidal angle, not by island position?**
-   The maps (fig5b) show χ=0 in thin θ-stripes where ∇∥T vanishes, not on the
-   island chains. Is this a ζ=0-slice artifact, or a genuine geometric feature
-   of the isotherm/field-line angle? A full 3-D χ-structure study would tell.
+1. **Toroidal geometry.** Still the Euclidean (ρ,θ,ζ) slab — the same choice
+   C2/C3a made, and Paul's constant-Jacobian metric makes the volume element
+   uniform (R-weighting changes V_PD <0.05%). A full toroidal metric for the
+   *operator* (not just the volume) remains untested.
 
-4. **Cantori.** We explicitly did **not** test whether the residual transport
-   barriers in the high-m fields are cantori. The instruction warned against
-   asserting this pre-data; the data here neither confirm nor refute it. A
-   flux-through-cantori calculation (à la MacKay–Meiss–Percival turnstile) on
-   these fields is the clean way to ask.
+2. **κ⊥ → 0 convergence.** On Paul's field the four V_PD are still separated at
+   κ⊥=1e-6 (0.897→0.423); they converge to 1 only at smaller κ⊥. Needs
+   κ⊥ ≤ 1e-7, where AMG already struggles (m=36 1e-6 hit the 2000-iter cap at
+   residual 1e-6). A field-aligned preconditioner would be the enabling step.
 
-5. **A graded converse-KAM.** converse-KAM saturates (≈100% for all four fields),
-   which is *why* its pointwise correlation with V_PD is weak. A graded
-   converse-KAM observable (e.g. the size of the largest surviving invariant
-   set, or a "distance to a torus") might correlate with V_PD where the binary
-   cannot. Would that recover Paul's expected agreement?
+3. **A graded converse-KAM.** converse-KAM is *fully saturated* (100%
+   non-existence) on all four fields, so its pointwise correlation with V_PD is
+   undefined (binary) or weak (graded t_c). A graded topological observable
+   (largest surviving invariant set; distance-to-a-torus) might correlate where
+   the saturated binary cannot — the cleanest way to actually test Paul's
+   small-κ⊥ agreement expectation.
 
-6. **t_c normalisation.** Our converse-KAM `t_c` ≈ 4 vs the C2 table's ≈19.
-   Reconciling the two implementations' detection thresholds would let the
-   absolute `t_c` numbers be compared, not just their (flat) ordering.
+4. **Cantori.** Still not tested; the data neither confirm nor refute. A
+   turnstile-flux calculation on these fields is the clean route.
+
+5. **WBA T=5000 vs T=1000.** The v2 WBA maps used n_periods=1000 (dig median
+   1.0–1.7); C3a's table used T=5000. The classification (chaos fraction) is
+   robust to this, but the m=36 dig median (1.72 vs C3a 0.99) reflects the
+   higher noise floor at fewer periods.
