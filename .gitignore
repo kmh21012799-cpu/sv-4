@@ -16,3 +16,7 @@ results/*.npz
 #   Never ignore them — losing arrays to .gitignore forced a recompute earlier.
 !paper/data/
 !paper/data/*.npz
+
+# MATLAB figure delivery bundle (duplicated data) + zip are artifacts
+paper/matlab_figs/
+paper/*.zip
