@@ -1,5 +1,18 @@
 # RECORD C3b — V_PD implementation and the three-axis comparison
 
+> **⚠️ CRITICAL CORRECTION (see RECORD_A2_field_discrepancy.md).** The field used
+> below is **not** Paul's specification: it omits the `psi(psi−psibar)` envelope
+> (paper eq. 4.1), uses `iota=0.5+rho` instead of `iota=psi`, a uniform instead
+> of n-dependent amplitude, and a different number of island chains
+> (m=12/20/36: 7/11/19 vs Paul's 9/15/27). Consequences: the V_PD **solver** is
+> validated (Stage-1 gate is local physics, envelope-insensitive) and the
+> three-axis table is internally self-consistent *on this field*, **but** the
+> Stage-2/3 results are **not** a reproduction of Paul's four fields, and the
+> quantitative findings (V_PD largest at m=4; ΔT largest at m=36; the
+> correlations; key question #8) hold **only on this field** — their status on
+> Paul's actual field is unknown. A recomputation on `consistency/orig/field_paul.py`
+> is required to make this a faithful Paul reproduction + comparison.
+
 **Character: reproduction + comparison. No claim of new discovery. Neutral ending.**
 
 Paul, Hudson & Helander (2022) computed the effective volume of parallel
