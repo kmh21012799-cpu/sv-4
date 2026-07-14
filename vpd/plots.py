@@ -91,6 +91,28 @@ def fig_stage3(path="results/stage3.json", out="figures/fig4_correlation.png"):
     fig.tight_layout(); fig.savefig(out, dpi=130); print("wrote", out)
 
 
+def fig_maps(path="results/stage3.json", m=12, out="figures/fig5_maps.png"):
+    """T, V_PD indicator chi, converse-KAM detection, WBA dig on the same
+    (rho, theta) slice for one field -- shows where the three axes agree/split."""
+    with open(path) as fh:
+        data = json.load(fh)
+    d = data[str(m)]
+    th = np.array(d["theta"]); rc = np.array(d["rho_core"])
+    rd = np.array(d["rho_diag"])
+    T = np.array(d["T_map"]); chi = np.array(d["chi_map"])
+    dig = np.array(d["dig"]); det = np.array(d["detected"])
+    fig, axs = plt.subplots(1, 4, figsize=(15, 3.6))
+    def show(ax, R, field, title, cmap, vmin=None, vmax=None):
+        im = ax.pcolormesh(th, R, field, cmap=cmap, vmin=vmin, vmax=vmax, shading="auto")
+        ax.set_title(title); ax.set_xlabel(r"$\theta$"); fig.colorbar(im, ax=ax, shrink=0.8)
+    show(axs[0], rc, T, f"(a) T  (m={m}, $\\kappa_\\perp$=1e-6)", "viridis", 0, 1)
+    show(axs[1], rc, chi, "(b) $V_{PD}$ indicator $\\chi$", "magma", 0, 1)
+    show(axs[2], rd, det.astype(float), "(c) converse-KAM detected", "Reds", 0, 1)
+    show(axs[3], rd, np.clip(dig, 0, 12), "(d) WBA dig (high=regular)", "cividis")
+    axs[0].set_ylabel(r"$\rho$")
+    fig.tight_layout(); fig.savefig(out, dpi=120); print("wrote", out)
+
+
 if __name__ == "__main__":
     import sys
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
@@ -102,3 +124,5 @@ if __name__ == "__main__":
         fig_stage2()
     if which in ("all", "4"):
         fig_stage3()
+    if which in ("all", "5"):
+        fig_maps()

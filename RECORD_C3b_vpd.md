@@ -109,6 +109,45 @@ magnitude, with the correct scalings. Stage 1 passes; C3b proceeds.**
 
 ---
 
-## 2. Stage 2 — the four fields   (filled after run)
+## 2. Stage 2 — the four fields (Paul Fig 5, 6)
+
+Fields m = 4, 12, 20, 36 at critical overlap (`s=1`), core `rho ∈ [0.25,0.75]`,
+`kperp = 1e-4, 1e-5, 1e-6`. Grids `Nrho=129`, `Ntheta=32` (poloidal-periodicity
+reduction `theta∈[0,2π/m)`), `Nzeta` scaled to resolve the resonant `n`
+(32→128). Warm-start continuation in `kperp`. Residuals `≤1e-8`, overshoot
+`<1%`.
+
+**V_PD** (parallel-diffusion volume fraction):
+
+| `kperp` | m=4 | m=12 | m=20 | m=36 |
+|---|---|---|---|---|
+| 1e-4 | **0.289** | 0.103 | 0.057 | 0.038 |
+| 1e-5 | **0.691** | 0.260 | 0.156 | 0.091 |
+| 1e-6 | **0.884** | 0.710 | 0.465 | 0.292 |
+
+**ΔT = ⟨T(0.75)⟩−⟨T(0.25)⟩** (temperature drop retained across the core;
+large = insulates, small = leaks):
+
+| `kperp` | m=4 | m=12 | m=20 | m=36 |
+|---|---|---|---|---|
+| 1e-4 | 0.455 | 0.480 | 0.485 | **0.496** |
+| 1e-5 | 0.404 | 0.427 | 0.427 | **0.472** |
+| 1e-6 | 0.391 | 0.399 | 0.379 | **0.440** |
+
+Findings vs Paul §7:
+- **V_PD is largest for m=4 at every `kperp`** — and monotone decreasing in `m`.
+  ✔ (Paul §7)
+- **ΔT is largest for m=36 at every `kperp`** — the field whose flux surfaces are
+  *most* broken (highest `m`) retains the *most* temperature gradient, i.e.
+  insulates best. ✔ (Paul Fig 5b, the paper's central figure). m=4 leaks most
+  (smallest ΔT) at 1e-4 and 1e-5; at 1e-6 m=4 and m=20 are within the ΔT grid
+  uncertainty (~5%).
+- **Convergence as `kperp→0`: not seen in our range.** The V_PD spread across
+  fields is 0.25 → 0.60 → 0.59 (not decreasing). Within `[1e-4,1e-6]` the four
+  fields remain well separated and ordered; m=4 saturates toward 1 while high-`m`
+  fields lag. The eventual convergence to `V_PD→1` lies at smaller `kperp` than
+  we computed. Reported as observed, not forced.
+
+Figure: `figures/fig3_fourfields.png`.
 
 ## 3. Stage 3 — the three-axis comparison   (filled after run)
