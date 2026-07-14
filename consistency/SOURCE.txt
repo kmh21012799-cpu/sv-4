@@ -1,0 +1,76 @@
+Provenance and consistency status of the C3b diagnostics
+========================================================
+
+C3b (vpd/) computed its three-axis correlations with REIMPLEMENTATIONS of
+converse-KAM and WBA (vpd/diagnostics.py), because at C3b time the original
+C2/C3a code was in a different, un-fetched branch and their grid data was
+gitignored (see RECORD_A_consistency_check.md, Stage 1).
+
+Originals (this session, cross-checked against):
+  C2  converse-KAM : commit 393328e  ("C2: Apply converse-KAM to Paul ...")
+  C3a WBA          : commit bf5ca06  ("C3a Stage 2: ... t_c vs WBA dig ...")
+  branch           : origin/claude/converse-kam-3d-y23ijj
+Copied verbatim (pinned to bf5ca06) into consistency/orig/:
+  converse_kam.py, wba.py, field_paul.py, SOURCE_original.txt
+
+Both the originals and the C3b reimplementations were written fresh from the
+source papers (Paul-Hudson-Helander 2022 arXiv:2108.06328; Kallinikos et al.
+2023 arXiv:2304.09613). QUASR/WBA external repos were not in scope for either.
+
+Cross-check (consistency/compare.py + correlations.py; same C3b field, same
+grid points):
+  converse-KAM : detection agreement 100%; Spearman(t_c) 0.975-0.978  -> CASE 1.
+                 "t_c differs" was a UNIT artifact (C3b reported periods; x2pi
+                 gives zeta, matching the original ~19-25).
+  WBA          : fine-rank Spearman 0.51-0.57 (dig is convergence noise in the
+                 chaotic bulk for BOTH), BUT regular/chaotic classification
+                 agrees 93-96% and aggregate stats match.
+  Correlations : recomputed with the ORIGINAL diagnostics ->
+                   r(cKAM,V_PD) identical (key question #8 reproduced exactly),
+                   r(WBA,V_PD) ~0 with both, r(cKAM,WBA) weak-negative with both.
+                 => C3b's correlation conclusions are ROBUST; nothing retracted.
+
+Slab vs torus: torus R-weighting changes V_PD by <0.05% (Paul's model has a
+constant metric Jacobian; the original C2 used the same uniform volume).
+
+
+MERGE / CONSOLIDATION (converse-kam-3d-y23ijj mainline)
+=======================================================
+
+C3b was developed on a separate branch (claude/v-pd-implementation-comparison-*)
+that started from an empty tree, did NOT fetch the original C2/C3a code, and
+reimplemented the tools -- including the Paul field, where it dropped the
+psi(psi-psibar) envelope of eq. 4.1 (see RECORD_A2). That branch has now been
+merged into the mainline so the whole project (C0..C3b v2) lives on one branch,
+with one grid archive committed. The v-pd branch is kept as history; do not
+delete it.
+
+Source of record for the three axes = tools/ (mainline, envelope present):
+  tools/field_paul.py, tools/converse_kam.py, tools/wba.py, tools/field_kmm.py,
+  tools/residue.py
+consistency/orig/{converse_kam,wba,field_paul}.py are a verbatim pin of tools/
+at bf5ca06 -- verified byte-identical (git diff empty). The corrected C3b v2
+imports the field/diagnostics from this pin (vpd/paulsolve.py, vpd/stage3_paul.py
+add consistency/orig to sys.path), so it runs on tools/'s code, NOT on any
+reimplementation.
+
+SUPERSEDED reimplementations, retained ONLY so the superseded record
+(records/RECORD_C3b_vpd.md) stays legible -- do NOT use them, they are not a
+source of record:
+  vpd/field.py :: paul_field()   -- constant-amplitude field, MISSING the
+                                    envelope; this was the C3b field bug.
+  vpd/diagnostics.py             -- reimplemented converse-KAM/WBA (the
+                                    consistency check found these agreed with
+                                    the originals; the bug was the field, not
+                                    these -- see RECORD_A).
+NOTE: vpd/field.py is not deleted because vpd/solver3d.py and solver2d.py import
+only its generic iota() helper (the axis iota profile), which the corrected V_PD
+solver needs. paul_field() is dead on the corrected path. A later refactor could
+extract iota() to a neutral module and drop paul_field()+diagnostics.py outright.
+
+Reproduced after merge (smoke test, corrected path, m=4, this environment):
+  kperp 1e-4/1e-5/1e-6  ->  V_PD 0.2458 / 0.7074 / 0.8974
+                            DeltaT 0.3773 / 0.1537 / 0.0386
+matching records/RECORD_C3b_v2_vpd.md (0.246/0.707/0.897, 0.377/0.154/0.039).
+Grid data is committed under results/grid/ and .gitignore is set NOT to ignore
+it -- a lost grid is what forced the C3b reimplementation in the first place.
