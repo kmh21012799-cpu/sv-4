@@ -81,6 +81,34 @@ Transition κ⊥ ∝ quasilinear `D_QL` (constant ratio ≈ 0.12 across a 16× r
 within one decade, same behaviour as before. **Stage-1 gate passes on Paul's
 field.**
 
-## 2. Stage 2 — four Paul fields   (filled after run)
+## 2. Stage 2 — four Paul fields (paul_m4/12/20/36, envelope)
+
+Core [0.25,0.75], `kperp = 1e-4/1e-5/1e-6`. Grid data saved to `results/grid/`.
+
+**V_PD | ΔT:**
+
+| kperp | m=4 | m=12 | m=20 | m=36 |
+|---|---|---|---|---|
+| 1e-4 | 0.246 \| 0.377 | 0.123 \| 0.401 | 0.067 \| 0.438 | 0.035 \| **0.465** |
+| 1e-5 | 0.707 \| 0.154 | 0.475 \| 0.190 | 0.223 \| 0.245 | 0.115 \| **0.310** |
+| 1e-6 | **0.897** \| 0.039 | 0.834 \| 0.060 | 0.697 \| 0.081 | 0.423 \| **0.113** |
+
+**Findings — identical to the paper's, and cleaner than the wrong-field run:**
+- **V_PD largest at m=4 at every kperp** (monotone decreasing in m). ✔ Paul §7.
+- **ΔT largest at m=36, smallest at m=4, at every kperp** (monotone increasing
+  in m). ✔ Paul Fig 5b. The most-broken field insulates best.
+- On Paul's field the ΔT ordering is **strictly monotone at all three kperp**
+  (the wrong-field run had m=4/m=20 crossing at 1e-6). So the correction did not
+  overturn the conclusion — it sharpened it.
+
+**vs the superseded (wrong-field) run:** V_PD comparable (m=4: 0.897 vs 0.884),
+but ΔT changed a lot (m=4: 0.039 vs 0.391) — Paul's wider chaotic band [1/8,7/8]
+strongly connects the core, so ΔT is small and the m-ordering is crisp.
+
+**Caveat:** m=36 at kperp=1e-6 hit the CG cap (2000 iters, residual 1e-6 not
+1e-8) — the single hardest solve (529k unknowns, anisotropy 1e6). The V_PD/ΔT
+ordering is well clear of that ~1e-6 uncertainty.
+
+## 3. Stage 3 — three-axis comparison, original diagnostics   (filled after run)
 
 ## 3. Stage 3 — three-axis comparison, original diagnostics   (filled after run)
