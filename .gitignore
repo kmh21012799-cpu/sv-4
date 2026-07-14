@@ -11,3 +11,8 @@ results/*.npz
 #   Never ignore it. A lost grid is what forced the C3b reimplementation.
 !results/grid/
 !results/grid/*.npz
+
+# ★ Paper Poincare arrays are committed on purpose (reproducibility).
+#   Never ignore them — losing arrays to .gitignore forced a recompute earlier.
+!paper/data/
+!paper/data/*.npz

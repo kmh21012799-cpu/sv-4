@@ -1,0 +1,5 @@
+  m=4: 25262 pts (13260 regular + 12002 chaos), 3 resonances -> paper/data/poincare_m4.npz
+  m=12: 37264 pts (13260 regular + 24004 chaos), 9 resonances -> paper/data/poincare_m12.npz
+  m=20: 37264 pts (13260 regular + 24004 chaos), 15 resonances -> paper/data/poincare_m20.npz
+  m=36: 37264 pts (13260 regular + 24004 chaos), 27 resonances -> paper/data/poincare_m36.npz
+POINCARE DONE
