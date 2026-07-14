@@ -10,9 +10,9 @@ cantori); **B** m=36 dig *higher* (fine islands, fast mixing); **C** no
 difference. All three are valid results. **If A appears it is the "pretty"
 result → suspect the code three times, above all the T-convergence.**
 
-> **★ STATUS: P-1 + P-2 gate + cost done; IC-vectorised RK4 built (≈200–300×
-> speedup); Stage 1 (T-convergence, core, 100 random ICs, T=500–5000) done.
-> Verdict below. Stopping before Stage 2 (spatial maps + t_c↔dig) per plan.**
+> **★ STATUS: P-1 + gate + cost + IC-vectorised RK4 + Stage 1 (T-convergence) +
+> Stage 2 focused (t_c↔dig correlation) all done. Verdict below. C3a complete;
+> V_PD (C3b) out of scope.**
 
 ---
 
@@ -144,6 +144,46 @@ answers the minimal proposition. Stage 2 (core reduced-grid spatial maps +
 t_c↔dig correlation) remains optional and independently interesting ("what do
 the two axes say about each other"); deferred to the user.
 
+## Stage 2 (focused) — converse-KAM t_c vs WBA dig at the same points
+
+400 random core ICs/field; C2 t_c (nearest grid cell) vs C3a dig (RK4 M=96,
+T=1000). `figures/wba_tc_dig_corr.png`.
+
+| field | core pts detected by converse-KAM | Spearman(t_c, dig) |
+|---|---|---|
+| m=4  | 399/400 | −0.20 |
+| m=12 | 399/400 | −0.17 |
+| m=20 | 399/400 | −0.21 |
+| m=36 | 400/400 | −0.14 |
+
+- **The two axes are only weakly related (|ρ|≈0.14–0.21).** Not tautological
+  (|ρ|≪1), not independent (≠0) — they measure *different* things (cf. the B4
+  dig↔FTLE ≈ −0.53; weaker here).
+- **The scatter is L-shaped, and the disagreement is exactly the islands.** The
+  chaotic bulk sits at low t_c + low dig (both axes say "chaotic"). But a
+  vertical spray at low t_c carries **high dig (up to ~14)**: these are island
+  interiors — **converse-KAM detects them fast ("no radial torus → dead") while
+  WBA calls them regular ("alive").** This is the §4.2 converse-KAM limitation
+  made quantitative, and it confirms the C1 prediction that the two indicators
+  split *precisely on islands*. It is also why the correlation is weak/negative:
+  agreement on the sea, anti-agreement on islands.
+- converse-KAM detects ≈100% of core points (as in C2); the WBA-regular island
+  points are a minority of the core but the sole locus of disagreement.
+
+## Overall C3a verdict
+
+**WBA does not distinguish the four Paul fields (core, h=ψ) — the same null as
+converse-KAM.** Both a KAM-existence axis and an orbit-regularity axis give the
+same reading for all four in the transport-relevant core, while V_PD/heat
+transport separates them cleanly (Paul). The two axes are themselves only weakly
+correlated and split on islands, so they are genuinely different lenses — but
+*neither* is a transport proxy here. Hypothesis A (m=36 stickier → lower dig) is
+**rejected** (finite-time artifact, caught by the T-scan). No discovery claim —
+a clean null observation. **What is left for C3b:** implement V_PD on the same
+fields and show it separates what these two axes cannot (the actual Paul
+comparison); the cantori-blindness *mechanism* remains a hypothesis until then
+(`future_questions.md`).
+
 ## (superseded) earlier proposed C3a body
 
 - **dig distributions** by *random sampling* (~800–1500 pts/field, weighted to the
@@ -162,4 +202,5 @@ the two axes say about each other"); deferred to the user.
 ```
 python3 scripts/wba_gate2.py                 # gate: m=4 dig map (real chaos)
 python3 scripts/wba_stage1.py                # Stage 1 T-convergence (core)
+python3 scripts/wba_stage2_corr.py           # Stage 2: t_c (C2) vs dig
 ```

@@ -55,9 +55,17 @@ None of these are claims; they are open items.
   identical t_c distributions, and a full-domain-area difference that runs
   *opposite* to transport — i.e. it does not track V_PD, exactly as it would if
   it were blind to the transport-controlling cantori. **This is consistency, not
-  proof of the mechanism.** The mechanism claim needs C3: add V_PD and a
-  stickiness diagnostic (WBA) on the *same* field and show they separate what
-  converse-KAM cannot. Only then is it more than a hypothesis.
+  proof of the mechanism.**
+- **C3a result STRENGTHENS the consistency but is still not proof** (RECORD_C3a):
+  WBA (core, h=ψ) *also* fails to distinguish the four fields — same null as
+  converse-KAM — and its apparent m=36 signal at short T is a finite-time
+  artifact. And WBA vs converse-KAM are only weakly correlated (Spearman ≈ −0.2),
+  splitting precisely on islands. So *two* topological/regularity axes miss what
+  V_PD sees. **The mechanism claim still needs C3b:** implement V_PD on the same
+  fields and show it separates them where these two axes cannot. Only then is the
+  cantori-blindness story more than a hypothesis. (Caveat: WBA was tested with
+  h=ψ in the core; a stickiness-tuned observable or the full domain might behave
+  differently — see RECORD_C3a limitations.)
 
 ## Toward C3 (V_PD vs converse-KAM — Paul's "future publication")
 
