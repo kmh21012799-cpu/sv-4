@@ -1,5 +1,10 @@
 # RECORD C3b — V_PD implementation and the three-axis comparison
 
+> **🛑 SUPERSEDED by RECORD_C3b_v2_vpd.md.** This record used the wrong field
+> (constant amplitude, no `psi(psi−psibar)` envelope). It is kept for the audit
+> trail; the corrected results are in the v2 record. Do not cite the Stage-2/3
+> numbers below.
+>
 > **⚠️ CRITICAL CORRECTION (see RECORD_A2_field_discrepancy.md).** The field used
 > below is **not** Paul's specification: it omits the `psi(psi−psibar)` envelope
 > (paper eq. 4.1), uses `iota=0.5+rho` instead of `iota=psi`, a uniform instead

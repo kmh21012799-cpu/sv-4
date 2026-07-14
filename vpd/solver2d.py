@@ -34,13 +34,13 @@ def _shape(xi, eta):
 
 
 def _kappa_tensor_3d(field, m, n, rho, u, kpar, kperp):
-    """Full 3x3 conductivity tensor for a single mode, at (rho,u)."""
-    # single mode: sin(m th - n ze) = sin(u)
-    eps = field.modes[0][2]
-    b_rho = eps * m * np.sin(u)
-    b_theta = iota(rho)
-    b_zeta = 1.0
-    B = np.array([b_rho, b_theta, b_zeta])
+    """Full 3x3 conductivity tensor at (rho,u) via the field's own B.
+
+    Single-helicity: any (theta,zeta) with m*theta-n*zeta=u gives the same B, so
+    evaluate at theta=u/m, zeta=0. Works for any field exposing .B (old constant
+    amplitude OR Paul-envelope), so validation runs identically on both."""
+    br, bt, bz = field.B(rho, u / m, 0.0)
+    B = np.array([float(br), float(bt), float(bz)])
     B2 = B @ B
     K = kperp * np.eye(3) + (kpar - kperp) * np.outer(B, B) / B2
     return K, B, B2
@@ -125,10 +125,7 @@ def solve_single_island(field, m, n, kpar, kperp, rho_min, rho_max,
     Trho = _drho(Tgrid, hrho)
     RHO = rho[:, None] * np.ones((1, Nu))
     U = (np.arange(Nu) * hu)[None, :] * np.ones((Nrho, 1))
-    eps = field.modes[0][2]
-    b_rho = eps * m * np.sin(U)
-    b_theta = iota(RHO)
-    b_zeta = 1.0
+    b_rho, b_theta, b_zeta = field.B(RHO, U / m, 0.0 * U)
     B2 = b_rho**2 + b_theta**2 + b_zeta**2
     # grad3 T = (Trho, m Tu, -n Tu)
     g_rho, g_th, g_ze = Trho, m * Tu, -n * Tu
