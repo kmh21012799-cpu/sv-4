@@ -150,4 +150,123 @@ Findings vs Paul §7:
 
 Figure: `figures/fig3_fourfields.png`.
 
-## 3. Stage 3 — the three-axis comparison   (filled after run)
+## 3. Stage 3 — the three-axis comparison
+
+All three indicators computed on the **same fields, same `(rho,theta)` grid
+(`zeta=0`), same core** `[0.25,0.75]`. converse-KAM and WBA from
+`vpd/diagnostics.py`; V_PD local indicator `chi = Θ(kpar|∇∥T|² − kperp|∇⊥T|²)`
+from the `zeta=0` slice of the 3-D solve.
+
+### 3.1 The comparison table  (V_PD, ΔT at `kperp = 1e-6`)
+
+| | m=4 | m=12 | m=20 | m=36 | separates fields? |
+|---|---|---|---|---|---|
+| **[topology] converse-KAM non-existence** | 99.5% | 99.4% | 99.5% | 100.0% | **no** (all ≈100%) |
+| **[topology] converse-KAM t_c median** | 4.0 | 4.0 | 4.0 | 4.0 | **no** |
+| **[dynamics] WBA dig median** | 1.60 | 1.67 | 1.89 | 2.45 | weakly / no |
+| **[dynamics] chaos fraction (dig<5)** | 79% | 85% | 87% | 86% | **no** |
+| **[transport] V_PD** | **0.884** | **0.710** | **0.465** | **0.292** | **YES** |
+| **[transport] ΔT** | 0.391 | 0.399 | 0.379 | **0.440** | **YES** (m=36 insulates) |
+
+(Our converse-KAM/WBA aggregates reproduce the C2/C3a table's *structure* —
+non-existence ≈100%, dig ≈1–2, chaos ≈80–90% — under the reimplementation
+caveat in Limitation 3; absolute `t_c` differs by a normalisation.)
+
+**This is the result of the whole comparison:** the two indicators that C2 and
+C3a showed cannot tell Paul's four fields apart — converse-KAM (topology) and
+WBA (dynamics) — still cannot here. The transport indicators **V_PD and ΔT can**,
+and in the direction Paul reported: fewer, wider island chains (m=4) transport
+most; many thin chains (m=36) transport least despite the most-broken surfaces.
+
+### 3.2 The three correlations (point by point, `zeta=0` core grid)
+
+- **converse-KAM ↔ WBA** = **−0.09, −0.01, +0.01, +0.03** (m=4…36). Weak, near
+  zero, and drifting through zero with `m`. Same weak/near-zero character C3a
+  found (Spearman ≈ −0.2, splitting at islands) — the two disagree exactly where
+  islands live (see 3.4).
+- **WBA ↔ V_PD** = **≈ 0** at every `kperp` (−0.05 … −0.01). Uncorrelated:
+  V_PD's structure does not track the island/chaos distinction WBA sees.
+- **converse-KAM ↔ V_PD** = **0.03 … 0.21**, weak at every `kperp`.
+
+### 3.3 Does converse-KAM ↔ V_PD correlation grow as `kperp → 0`?  → **NO**
+
+| m | `kperp`=1e-4 | 1e-5 | 1e-6 |
+|---|---|---|---|
+| 4  | 0.102 | 0.207 | 0.173 |
+| 12 | 0.108 | 0.132 | 0.106 |
+| 20 | 0.092 | 0.089 | 0.063 |
+| 36 | 0.031 | 0.079 | 0.085 |
+
+The correlation stays weak (≤0.21) with no consistent growth toward small
+`kperp` — for m=20 it *decreases*. **Paul's expectation** (§3: "we expect …
+agreement … in the limit of small perpendicular diffusion") **is not confirmed
+as a pointwise spatial correlation in this computation.** Figure
+`figures/fig4_correlation.png`.
+
+This is exactly the outcome trap 3 warned to check for: the correlation does
+**not** approach 1. Had it done so we would have distrusted the code, because a
+high converse-KAM↔V_PD correlation is incompatible with C2's finding that
+converse-KAM cannot distinguish the four fields while V_PD does. The weak,
+non-growing correlation is the self-consistent result.
+
+### 3.4 Where the three axes split (maps, `figures/fig5_maps.png`)
+
+The `(rho,theta)` maps for m=12 make the split concrete:
+- **converse-KAM** is *saturated* — ≈100% "destroyed" everywhere, no spatial
+  structure. A binary that has already gone all-on cannot track anything.
+- **WBA dig** shows the island chains as regular (high dig) islands embedded in
+  chaos (low dig) — it sees the islands as **alive**.
+- **V_PD's χ** is ≈1 almost everywhere except thin poloidal stripes where the
+  field-aligned temperature gradient vanishes. Its structure is organised by the
+  temperature-gradient geometry, matching **neither** converse-KAM's saturation
+  **nor** WBA's island pattern.
+
+So, to the question "does V_PD treat an island as dead (like converse-KAM) or
+alive (like WBA)?": **in these critical-overlap fields the question barely
+applies** — converse-KAM is saturated and V_PD's structure is set by where
+∇∥T is large, not by island topology or by local regularity. **We do not
+assert the cantori explanation.** The data say V_PD is a third, distinct thing:
+a graded transport measure whose spatial pattern is decorrelated from both the
+topological and the dynamical indicator, which is precisely why it separates the
+four fields when they cannot.
+
+### 3.5 Resolving the stated tension
+
+The instruction posed: Paul expects converse-KAM ≈ V_PD as `kperp→0`, yet
+converse-KAM cannot distinguish the four fields while V_PD can — are these
+compatible? Our answer, from the data:
+
+- **Aggregate limit:** as `kperp→0`, `V_PD→1` for all fields and converse-KAM
+  non-existence ≈100% for all fields. Both saturate near 1, so they "agree" in
+  the trivial averaged sense Paul anticipated.
+- **But** that agreement is *saturation*, not spatial correspondence: pointwise
+  they stay weakly correlated (3.3), and the discrimination that makes V_PD
+  interesting happens at **finite** `kperp`, *before* saturation, where
+  converse-KAM is already pinned at 100%.
+
+So the two statements are compatible, and the resolution is not paradoxical:
+converse-KAM and V_PD coincide only in the degenerate all-destroyed / all-parallel
+limit, and that coincidence carries none of the information (the field-to-field
+ordering) that the comparison is about.
+
+---
+
+## 4. Verdict
+
+- **Stage 1 (gate): PASSED.** Both of Paul's analytic predictions reproduced
+  within one order of magnitude, with correct scalings, untuned.
+- **Stage 2: qualitatively matches Paul Fig 5–6.** V_PD largest for m=4; ΔT
+  largest for m=36 (most-broken field insulates best). (Caveat: the four fields
+  do not yet converge within `kperp∈[1e-4,1e-6]`.)
+- **Stage 3: the three-axis comparison exists.** The comparison Paul deferred in
+  2022 is completed here on one stage. Result, stated neutrally: **transport
+  (V_PD, ΔT) separates the four fields; topology (converse-KAM) and dynamics
+  (WBA) do not; and the converse-KAM↔V_PD correlation does not grow as
+  `kperp→0`, contrary to Paul's stated expectation.** No new-discovery claim is
+  made; this is reproduction + comparison, and several of the numbers rest on a
+  reduced-geometry model and reimplemented diagnostics (see Limitations).
+
+Figures: `figures/fig1_island.png` (Val 1), `fig2_chaos.png` (Val 2),
+`fig3_fourfields.png` (Stage 2), `fig4_correlation.png` (Stage 3 correlation),
+`fig5_maps.png` (Stage 3 maps). Data: `results/*.json`. Reproduce with
+`python3 -m vpd.validate1 | validate2 | stage2 | stage3` then `vpd.plots`.
