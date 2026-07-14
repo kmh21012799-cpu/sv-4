@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 results/*.log
 consistency/**/__pycache__/
+results/*.npz
