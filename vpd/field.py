@@ -1,3 +1,17 @@
+# ★★ SUPERSEDED — DO NOT USE FOR NEW WORK ★★
+#
+# paul_field() in this file uses CONSTANT perturbation amplitudes,
+# omitting Paul's psi(psi - psibar) envelope (Paul et al. 2022, eq. 4.1).
+# This caused C3b's first attempt to run on the wrong magnetic field.
+# It passed all validation gates anyway — the gates probe a single
+# resonance, where the envelope is nearly constant, so they were blind
+# to the difference.
+#
+# ★ The source of record is tools/field_paul.py (has the envelope).
+# ★ Retained only so that RECORD_C3b_vpd.md (SUPERSEDED) stays reproducible.
+#
+# The iota() helper below is generic and IS used by the corrected solver.
+
 """
 Magnetic field model for the V_PD (effective volume of parallel diffusion)
 computation.

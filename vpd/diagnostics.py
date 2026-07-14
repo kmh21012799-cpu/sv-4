@@ -1,3 +1,17 @@
+# ★★ SUPERSEDED — DO NOT USE FOR NEW WORK ★★
+#
+# This file REIMPLEMENTS converse-KAM (C2) and WBA (C3a) from scratch.
+# The consistency check (records/RECORD_A_consistency_check.md) found these
+# reimplementations AGREE with the originals (converse-KAM detection 100%,
+# WBA regular/chaotic classification 93–96%) — so the C3b bug was the magnetic
+# field (vpd/field.py), NOT these diagnostics. They are still not a source of
+# record.
+#
+# ★ The source of record is tools/converse_kam.py (C2) and tools/wba.py (C3a).
+# ★ The corrected C3b v2 uses those originals via consistency/orig/ (pinned to
+#   bf5ca06); see vpd/stage3_paul.py.
+# ★ Retained only so that RECORD_C3b_vpd.md (SUPERSEDED) stays reproducible.
+
 """
 Field-line diagnostics on the SAME field and (rho, theta) grid used for V_PD,
 so the three axes can be correlated point by point.
