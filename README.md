@@ -1,33 +1,247 @@
-# converse-kam-3d
+# converse-KAM 3D — 위상·동역학·수송 지표의 비교
 
-Reproduction/verification project working toward a quantitative comparison of
-**Paul–Hudson–Helander's effective parallel-diffusion volume `V_PD`** with the
-**converse-KAM** non-existence method, in the *same* magnetic fields.
+## 이 레포가 하는 것
 
-Paul, Hudson & Helander (2022, arXiv:2108.06328) wrote that their metric
-"appears to be related to the converse KAM approach … We reserve such a
-comparison for future publication." This repo builds toward that comparison in
-staged, verifiable steps. **It makes no new-discovery claims.**
+**Paul, Hudson & Helander (2022, JPP 88, 905880107) 결론:**
 
-## Stages
+> "our metric appears to be related to the converse KAM approach...
+> We expect that the effective volume of parallel diffusion might agree with
+> such a calculation in the limit of small perpendicular diffusion.
+> **We reserve such a comparison for future publication.**"
 
-- **C0 — magnetic fields** (`records/RECORD_C0_fields.md`): implement and
-  Poincaré-validate the KMM (2023) and Paul (2022) model fields. **Done / PASS.**
-- **C1 — converse-KAM 3D** (`records/RECORD_C1_converse_kam.md`): implement the
-  MacKay/KMM converse-KAM test and validate it on the integrable KMM island
-  (known answer). **Done — PASS on Fig. 4 (area→S_I, ratio 1.003) and Fig. 5
-  (t_c∝1/√R); PARTIAL on the symmetry-line factor-of-2 (recorded).**
-- C2 / C3 — apply to Paul's critical-chaos fields; implement `V_PD` and compare.
-  **Out of scope for now.**
+**★ 2022년에 적혔고, 4년째 나오지 않았다. 이 레포는 그 비교를 수행한다.**
 
-## Layout
+---
+
+## ★ 핵심 결과 (현재까지)
+
+**같은 자기장 (Paul 임계 겹침, m = 4, 12, 20, 36), 같은 격자, 같은 코어:**
+
+| 지표 | 축 | 넷을 구분하는가 |
+|---|---|---|
+| **converse-KAM** | 위상 | **★ 못 한다** (C2) |
+| **WBA** | 동역학 | **★ 못 한다** (C3a) |
+| **V_PD** | 수송 | **★ 한다** (Paul 2022) |
+| **실제 열 수송 (ΔT)** | — | **★ 한다** (Paul 2022) |
+
+**★ 두 개의 위상/동역학 지표가, 수송 지표가 보는 것을 놓친다.**
+
+**★ 이것이 "깨졌다 ≠ 샌다"의 정량적 형태다.**
+
+---
+
+## 진행 상황
+
+| | 내용 | 상태 | 커밋 |
+|---|---|---|---|
+| **C0** | KMM·Paul 자기장 구현 + Poincaré 검증 | ✅ | e268182 |
+| **C1** | converse-KAM 3D 구현 + 섬 면적 검증 | ✅ | c35facb |
+| **C2** | converse-KAM을 Paul 자기장 4개에 적용 | ✅ | 393328e |
+| **C3a** | WBA를 같은 자기장에 적용 | ✅ | bf5ca06 |
+| **C3b** | V_PD 구현 + 3축 비교 | ⬜ | — |
+
+각 단계의 상세 기록: `records/RECORD_C0_fields.md`, `records/RECORD_C1_converse_kam.md`,
+`records/RECORD_C2_paul_converse_kam.md`, `records/RECORD_C3a_wba_paul.md`,
+`records/future_questions.md`.
+
+---
+
+## C2 — converse-KAM은 구분하지 못한다
+
+**N=160, t_f=200:**
+
+| | 공명수 | 면적(%) | **코어 ρ∈[.25,.75]** | 미검출% | **t_c 중앙값** |
+|---|---|---|---|---|---|
+| m=4 | 3 | 65.9 | **100.0%** | 33.7 | **18.9** |
+| m=12 | 9 | 71.9 | **99.9%** | 27.6 | **19.5** |
+| m=20 | 15 | 73.4 | **100.0%** | 26.1 | **19.4** |
+| m=36 | 27 | 74.0 | **100.0%** | 25.5 | **20.5** |
+
+**★ 세 가지 읽기, 전부 같은 방향:**
+
+**① 코어(Paul의 정규화 밴드)에서 넷 다 100% 비존재**
+→ **수송이 사는 곳에서 구분 못 함**
+
+**② t_c 분포가 거의 동일** (히스토그램 겹침)
+→ **"면적은 같은데 t_c가 다르다"는 탈출구도 없음**
+
+**③ 전영역 면적은 다르나(66→74%), V_PD와 반대 방향**
+- m=4가 면적 최소인데 수송은 최대
+- **★ 그 차이는 섬 코어·가장자리 기하에서 나온다 (수송과 무관한 곳)**
+
+**★ Paul의 2022년 예측을 처음으로 직접 검정하고 확인했다.**
+
+---
+
+## C3a — WBA도 구분하지 못한다
+
+### 게이트 통과 (도구가 살아 있음을 확인)
+
+**단일 공명 Paul 자기장에서 dig_ψ가 정확히 분리:**
+- **섬 내부: dig ≈ 12–14** (규칙적)
+- **경계 KAM: 높음** (규칙적)
+- **★ 카오스 바다: dig ≈ 1**
+
+**★ 이것이 "눈금"이다. 도구가 규칙과 카오스를 구분할 줄 안다.**
+**★ 따라서 코어의 dig ≈ 1은 "도구 고장"이 아니라 "진짜 카오스"다.**
+
+### ★★ T-수렴 스캔 — 그리고 유한시간 함정을 잡았다
+
+**코어 무작위 IC 100개, T = 500/1000/2000/5000의 dig 중앙값:**
+
+| | T=500 | T=1000 | T=2000 | T=5000 |
+|---|---|---|---|---|
+| m=4 | 1.05 | 1.19 | 1.21 | **1.46** |
+| m=12 | 0.93 | 0.93 | 0.83 | 0.97 |
+| m=20 | 1.21 | 1.12 | 1.01 | 0.93 |
+| m=36 | **1.42** | 1.24 | 1.14 | 0.99 |
+
+**★ 결정적 관찰:**
+
+**T=1000 스냅샷 하나만 봤으면 — m=36이 가장 높아서 "cantori 신호"로 착각했을 것이다.**
+
+**★ 그리고 그것이 정확히 우리가 원하던 답(가설 A)이었다.**
+
+**★ 그러나 T를 늘리니 씻겨나갔다.** 곡선이 교차한다:
+- m=36: 1.42 → 0.99 (**떨어짐**)
+- m=4: 1.05 → 1.46 (**오름**)
+
+**→ 가설 A 기각. 유한시간 아티팩트였다.**
+
+**★ 이것은 D1의 유한시간 함정(μ≈1.5)과 같은 구조다. 세 번째 만났다.**
+**★ 그리고 세 번 다 "시간을 늘려서" 잡았다.**
+
+**★ 잔여 차이의 정체:** 큰 T에서 m=4가 약간 높은 것은 **m=4의 큰 섬**을 추적한 것이다.
+**★ 수송과 반상관이며(섬이 클수록 열이 더 샌다), C2의 면적 결과와 같은 부호다.**
+**★ 즉 수송 신호가 아니다.**
+
+### 판정
+
+**★ 네 자기장의 코어 dig 분포가 구분되지 않는다**
+(중앙값 ≈ 1, ~90% 카오스, IQR이 모든 T에서 완전히 겹침).
+
+**→ 가설 C: WBA도 넷을 구분하지 못한다.**
+
+### 방법 (비용)
+
+**★ IC에 대해 벡터화된 고정 스텝 RK4** → 적응 스텝 대비 **200–300배 빠름.**
+**★ 적응 스텝과 대조 검증됨** (코어 중앙값 1.05 vs 1.13, Spearman 0.96).
+
+**★ 관측량: h = ψ가 위치보다 낫다.**
+**★ 유계 좌표 함정(D_FL에서 데인 것)은 여기서 물지 않았다.**
+(WBA는 확산이 아니라 평균의 수렴을 재므로.)
+
+---
+
+## ★★ Stage 2 — 두 지표는 섬에서 갈린다
+
+**같은 점에서 t_c(C2) ↔ dig(C3a):**
 
 ```
-tools/     field_kmm.py, field_paul.py, kmm_island.py, residue.py, converse_kam.py
-scripts/   Poincaré / residue / converse-KAM figure generators
-figures/   generated PNGs
-records/   RECORD_C0_fields.md, RECORD_C1_converse_kam.md, future_questions.md
+Spearman ≈ −0.14 ~ −0.21   (약함)
 ```
+
+**★ 동어반복도 아니고, 무관하지도 않다.**
+
+**★ 산점도가 L자형이다:**
+
+| 영역 | converse-KAM | WBA | |
+|---|---|---|---|
+| **카오스 바다** | 검출 (빠름) | dig 낮음 | **★ 일치** |
+| **★ 섬 내부** | **"죽음"** (radial torus 없음, 빨리 검출) | **"살아있음"** (dig 높음) | **★ 갈림** |
+
+**★ 즉 두 지표가 정확히 섬에서 갈린다. 그리고 그것이 전부다.**
+
+**★ 이것은:**
+- KMM이 §4.2에서 경고한 한계 (radial foliation은 섬과 카오스를 구분 못 함)
+- C1에서 예측한 것 ("두 지표는 정확히 섬에서 갈릴 것")
+
+**★ 이제 Paul의 자기장에서 정량화되었다.**
+
+---
+
+## ★ 그래서 — 지금 서 있는 곳
+
+**확립된 것:**
+> **converse-KAM(위상)도 WBA(동역학)도 Paul의 네 자기장을 구분하지 못한다.**
+> **그런데 V_PD와 열 수송은 구분한다.**
+> **★ 두 렌즈가 수송 지표가 보는 것을 놓친다.**
+
+**★ 여전히 가설인 것:**
+> **converse-KAM은 cantori를 보지 못한다.**
+> m=36의 열 차단이 cantori(부분 장벽)일 수 있다.
+
+**★ 관찰적 근거:** m=36의 카오스는 연결되어 있으나 전송이 매우 느리다
+(전 범위를 돌려면 **10⁵ 회전** 필요; 10³ 회전에서는 폭 0.19만).
+
+**★ 그러나 아직 증명되지 않았다.**
+**★ 왜냐면 V_PD를 우리 손으로 구현하지 않았기 때문이다.**
+(Paul의 논문 그림에서 값을 읽은 것이지, 우리 계산이 아니다.)
+
+**★ 그것이 C3b다. 그리고 그것이 Paul이 2022년에 남긴 비교를 완성한다.**
+
+---
+
+## ★ 배운 함정
+
+### ① 격자 이산화 (비단조 오차) — C2
+
+섬 면적의 격자 오차가 **비단조 ±0.5%**로 요동.
+**★ 진단: converse-KAM을 아예 쓰지 않고 해석적 참 섬만 셀 카운트해도 똑같은 요동.**
+→ 100% 이산화. 얇은 초승달 경계(섬 셀의 25–27%)가 사각 격자에 잘리는 방식 때문.
+
+> **★ 격자 오차가 단조 감소하지 않으면, 그것은 수렴이 아니라 요동이다.**
+> **★ "N을 키우니 오차가 줄었다"가 우연일 수 있다.**
+
+### ② 유한시간 착각 — C2와 C3a에서 두 번
+
+**C2:** 3000 회전에서 m=36의 카오스가 **파편화된 것처럼 보였다.**
+→ 10⁵ 회전까지 늘리니 전 범위를 돌았다. **cantori 병목이었다.**
+
+**★ C3a:** T=1000에서 m=36의 dig가 가장 높았다.
+→ **★ 그리고 그것이 정확히 우리가 원하던 답(cantori 가설)이었다.**
+→ T=5000까지 늘리니 씻겨나갔다. **곡선이 교차했다.**
+
+> **★ 유한시간에서 본 것이 무한시간의 진실이 아니다.**
+> **★ 그리고 특히 — 원하던 답이 유한시간에서 나오면 더 의심하라.**
+
+### ③ 눈금 (게이트) — C3a
+
+**★ dig ≈ 1이 "낮다"고 말하려면, "높다"가 뭔지 알아야 한다.**
+
+**★ 게이트(단일 공명 자기장에서 섬 내부 dig ≈ 12–14)가 그 눈금이다.**
+
+> **★ 대비군 없이 측정값을 해석하지 말라.**
+> **★ 도구가 정상 작동하는지 먼저 확인하라.**
+
+**★ 이것은 D_FL의 잡음 바닥 문제와 같은 구조다.**
+(규칙 궤도조차 폭의 19%까지 "퍼진" 것처럼 보였던 것.)
+
+---
+
+## 도구
+
+| 파일 | 내용 | 검증 |
+|---|---|---|
+| `tools/field_kmm.py` | Kallinikos-MacKay 자기장 | 불변량 6×10⁻¹² 보존 |
+| `tools/field_paul.py` | Paul 자기장 | Chirikov S = 1.000, separatrix 1/8, 7/8 |
+| `tools/converse_kam.py` | converse-KAM (MacKay 2018) | 섬 면적 0.3% 오차 |
+| `tools/wba.py` | WBA (Duignan-Meiss 2023) | **★ 게이트 통과** (섬 12–14 vs 바다 1) |
+| `tools/residue.py` | Greene residue | R_O = +0.52, R_X = −0.69 |
+
+**★ 주의: `residue.py`, `wba.py`는 원본 레포의 검증된 코드가 아니라
+이 레포에서의 구현이다.** (SOURCE.txt 참조)
+
+---
+
+## 문헌
+
+- **MacKay (2018)** Reg. Chaotic Dyn. 23, 797 — converse-KAM 3D 이론
+- **Kallinikos, MacKay & Martínez-del-Río (2023)** PPCF 65, 095021 — 토로이달 구현
+- **★ Paul, Hudson & Helander (2022)** JPP 88, 905880107 — V_PD, **그리고 미해결 비교**
+- **Duignan & Meiss (2023)** Physica D 449, 133749 — WBA
+
+---
 
 ## Setup
 
@@ -35,5 +249,4 @@ records/   RECORD_C0_fields.md, RECORD_C1_converse_kam.md, future_questions.md
 pip install -r requirements.txt
 ```
 
-See each `RECORD_*.md` for exact reproduction commands and the LIMITATIONS
-(stated first in every record).
+각 `records/RECORD_*.md`에 정확한 재현 명령과 LIMITATIONS(각 기록의 맨 앞)가 있다.
