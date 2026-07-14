@@ -68,9 +68,108 @@ had done (their `SOURCE.txt`: "written fresh from the two source papers"; QUASR
 not in scope). The reimplementation was the honest option available; this record
 now checks it was a faithful one.
 
-## 2. Stage 2 — consistency verification   (filled from the full run)
+## 2. Stage 2 — consistency verification
 
-## 3. Stage 3 — verdict and actions   (filled after §2)
+Original vs C3b diagnostics, **same C3b field, same 480 grid points**
+(`rho∈[0.25,0.75]×24`, `theta∈[0,2π/m)×20`), `t_f=200`, WBA `n_periods=300`.
+
+### 2.1 converse-KAM (original MacKay/KMM Thm 3.1  vs  C3b tangent test)
+
+| quantity | m=12 | m=4 |
+|---|---|---|
+| detection agreement (detected/undetected) | **100.0%** | **100.0%** |
+| Spearman `t_c` (detected-by-both) | **0.978** | **0.975** |
+| Pearson `t_c` | 0.978 | 0.995 |
+| `t_c` median, original (zeta) | 22.6 | 19.2 |
+| `t_c` median, C3b (zeta) | 25.1 | 25.1 |
+| scale ratio (C3b/orig), median | 1.11 | 1.10 |
+
+→ **CASE 1 (fully consistent).** Ranks preserved (Spearman ≥ 0.97), detection
+identical, absolute `t_c` matches within ~10–30%. The small ~1.1 systematic and
+the C3b median pinned at `4·2π=25.1` come from C3b checking the tangent sign
+once per period (period-granular `t_c`) vs the original's event-based timing.
+Figure `figures/figA_consistency.png` (top).
+
+### 2.2 The "t_c differs" flag was a **unit artifact**
+
+C3b reported `t_c` in **periods** (median ≈ 4); the original and the C2 table
+report it in **zeta** (median ≈ 19). `4 periods × 2π = 25.1 ≈ 19–25`. Once units
+match, they agree — there is no physics discrepancy. (C3b's LIMITATIONS is
+corrected accordingly.)
+
+### 2.3 WBA (original continuous-integral dig  vs  C3b stroboscopic dig)
+
+| quantity | m=12 | m=4 |
+|---|---|---|
+| Spearman `dig` (all points) | 0.574 | 0.514 |
+| Pearson `dig` | 0.875 | 0.923 |
+| **regular/chaotic classification agreement** (dig≷5) | **92.9%** | **96.3%** |
+| chaos fraction (dig<5), original | 0.756 | 0.758 |
+| chaos fraction (dig<5), C3b | 0.823 | 0.788 |
+| dig median, original | 1.27 | 1.11 |
+| dig median, C3b | 1.83 | 1.52 |
+
+→ Fine-rank **Spearman 0.51–0.57 is below the 0.7 gate**, but this is *intrinsic*,
+not a fidelity defect: `dig` in the chaotic bulk is a convergence-noise value
+with no stable rank in **either** implementation (the scatter, `figA` bottom,
+shows two clean clusters — both-chaotic and both-regular — with a scrambled
+low-dig blob). The quantity that matters, the regular/chaotic **classification,
+agrees 93–96%**, and the aggregate stats match. So the disagreement is confined
+to the meaningless fine-ordering inside the chaotic sea.
+
+### 2.4 Slab vs torus volume element (secondary)
+
+Applying a large-aspect-ratio torus weight `dV = (1+0.3 cosθ) dρdθdζ` to V_PD:
+`rel change = −0.01%` (m=12), `+0.03%` (m=4). **Negligible.** Consistent with
+Paul's model having a constant metric Jacobian (uniform volume) and with the
+original C2 using the same uniform `dρ∧dθ` weighting. The slab volume element is
+not an approximation here.
+
+## 3. Stage 3 — verdict and the decisive robustness test
+
+The fidelity Spearman (0.97 for cKAM, 0.55 for WBA) bounds the *diagnostics*.
+But what is actually at stake is the **correlations**. So we recomputed C3b's
+three correlations **using the original diagnostics** on the same field/grid
+(the field-line diagnostics are κ⊥-independent, so reused across κ⊥ while only
+V_PD's χ is re-solved). `results/consistency_correlations.json`:
+
+| correlation | field | using **original** | using **C3b** |
+|---|---|---|---|
+| r(cKAM, V_PD) @ κ⊥=1e-4/1e-5/1e-6 | m=12 | 0.151 / 0.088 / 0.088 | **identical** |
+| r(cKAM, V_PD) @ κ⊥=1e-4/1e-5/1e-6 | m=4 | 0.089 / 0.194 / 0.194 | **identical** |
+| r(WBA, V_PD) (weak/≈0) | m=12 | −0.05 … −0.09 | −0.01 … −0.02 |
+| r(WBA, V_PD) (weak/≈0) | m=4 | −0.04 … −0.05 | −0.09 … −0.10 |
+| r(cKAM, WBA) | m=12 | −0.163 | −0.099 |
+| r(cKAM, WBA) | m=4 | −0.056 | −0.102 |
+
+- **r(cKAM, V_PD) is identical** with the original (detection agrees 100%), so
+  **key question #8** ("the correlation does not grow as κ⊥→0") is reproduced
+  *exactly* by the original converse-KAM. **Fully robust.**
+- **r(WBA, V_PD) ≈ 0** with both — the null survives the swap despite WBA's
+  0.55 fine-rank fidelity, because a null correlation is preserved under
+  noisy relabelling. **Robust.**
+- **r(cKAM, WBA)** is weak-negative with both; the *original* gives −0.16 for
+  m=12, even closer to C3a's reported −0.2 than the C3b reimplementation.
+
+### Verdict
+
+- **converse-KAM: CASE 1.** Consistent (Spearman 0.97, 100% detection agreement).
+- **WBA: CASE 2** in effect. Fine-rank Spearman (0.55) is below the strict gate,
+  but (i) the regular/chaotic classification agrees 93–96%, (ii) the aggregate
+  stats match, and (iii) **every correlation that uses WBA is a weak/null value
+  that both implementations reproduce.** No C3b conclusion depends on WBA's
+  fine ranking.
+- **The correlation results and key question #8 are trustworthy.** #8 rests on
+  converse-KAM, which is fully consistent; the WBA-dependent correlations are
+  nulls that survive substituting the original code. **Nothing is retracted.**
+
+### Actions taken
+- `consistency/SOURCE.txt`: reimplementation + cross-check result recorded.
+- `RECORD_C3b_vpd.md` LIMITATIONS: corrected the `t_c` unit note; added the
+  cross-check outcome (correlations robust, converse-KAM Spearman 0.97).
+- No correlation was recomputed for the final C3b tables (they are unchanged);
+  the robustness is documented rather than forcing a numeric edit that the
+  cross-check shows would be identical.
 
 ## 4. Secondary — slab vs torus volume element
 

@@ -1,0 +1,22 @@
+{
+  "m": 12,
+  "n_points": 480,
+  "t_f": 200.0,
+  "wba_periods": 300,
+  "ck_detect_frac_orig": 0.9875,
+  "ck_detect_frac_mine": 0.9875,
+  "ck_detect_agreement": 1.0,
+  "ck_spearman": 0.9780882615231191,
+  "ck_pearson": 0.9780591761820661,
+  "ck_scale_ratio_median": 1.1098200933121705,
+  "ck_tc_median_orig": 22.626643041331636,
+  "ck_tc_median_mine": 25.132741228718274,
+  "wba_spearman": 0.5741399702255652,
+  "wba_pearson": 0.8753990965562266,
+  "wba_chaos_frac_orig": 0.75625,
+  "wba_chaos_frac_mine": 0.8229166666666666,
+  "wba_dig_median_orig": 1.2677614517310922,
+  "wba_dig_median_mine": 1.8344358466377084,
+  "wba_regular_frac_orig": 0.14791666666666667,
+  "wba_regular_frac_mine": 0.025
+}

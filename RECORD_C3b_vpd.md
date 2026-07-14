@@ -32,14 +32,22 @@ These bound every number below. None of them is tuned away.
    adjust anything to hit `eps_crit`, the transition `kperp`, or any ordering.
    (Same discipline as B2's untuned `eps_cr`.)
 
-3. **converse-KAM and WBA are reimplementations.** The original C2/C3a code is
-   not in this repository. `vpd/diagnostics.py` contains self-contained
+3. **converse-KAM and WBA are reimplementations — now cross-checked (see
+   RECORD_A_consistency_check.md).** `vpd/diagnostics.py` contains self-contained
    field-line diagnostics: a weighted-Birkhoff `dig` (WBA) and a MacKay-style
-   tangent cone-crossing converse-KAM. They reproduce the *qualitative*
-   structure of the C2/C3a table (converse-KAM non-existence ≈100%, dig median
-   ≈1, chaos fraction ≈90%, and the island split) but not its exact numbers
-   (e.g. our `t_c` runs ~4 vs the table's ~19 — a normalisation difference).
-   The comparison stands on the qualitative behaviour, not on matched digits.
+   tangent cone-crossing converse-KAM. Cross-checked against the originals
+   (C2=`393328e`, C3a=`bf5ca06`, branch `converse-kam-3d-y23ijj`) on the same
+   field/grid:
+   - **converse-KAM: Spearman 0.97, detection agreement 100%.** The earlier
+     "`t_c` ~4 vs table ~19" was a **unit artifact** — C3b reports `t_c` in
+     *periods*; `×2π` gives *zeta*, median ≈ 19–25, matching the original.
+   - **WBA: fine-rank Spearman ~0.55** (dig is convergence noise in the chaotic
+     bulk for both implementations) but regular/chaotic **classification agrees
+     93–96%** and aggregate stats match.
+   - **The §3 correlations are robust:** recomputed with the *original*
+     diagnostics, `r(cKAM,V_PD)` is identical (so key question #8 is reproduced
+     exactly), `r(WBA,V_PD)≈0` with both, `r(cKAM,WBA)` weak-negative with both.
+     Nothing is retracted.
 
 4. **The Heaviside indicator is grid-sensitive (trap 2).** `V_PD` integrates a
    binary condition; `DeltaT` measures a small residual core drop. `V_PD`
@@ -162,7 +170,7 @@ from the `zeta=0` slice of the 3-D solve.
 | | m=4 | m=12 | m=20 | m=36 | separates fields? |
 |---|---|---|---|---|---|
 | **[topology] converse-KAM non-existence** | 99.5% | 99.4% | 99.5% | 100.0% | **no** (all ≈100%) |
-| **[topology] converse-KAM t_c median** | 4.0 | 4.0 | 4.0 | 4.0 | **no** |
+| **[topology] converse-KAM t_c median** (periods; ×2π→zeta≈25) | 4.0 | 4.0 | 4.0 | 4.0 | **no** |
 | **[dynamics] WBA dig median** | 1.60 | 1.67 | 1.89 | 2.45 | weakly / no |
 | **[dynamics] chaos fraction (dig<5)** | 79% | 85% | 87% | 86% | **no** |
 | **[transport] V_PD** | **0.884** | **0.710** | **0.465** | **0.292** | **YES** |

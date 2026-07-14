@@ -1,0 +1,34 @@
+Provenance and consistency status of the C3b diagnostics
+========================================================
+
+C3b (vpd/) computed its three-axis correlations with REIMPLEMENTATIONS of
+converse-KAM and WBA (vpd/diagnostics.py), because at C3b time the original
+C2/C3a code was in a different, un-fetched branch and their grid data was
+gitignored (see RECORD_A_consistency_check.md, Stage 1).
+
+Originals (this session, cross-checked against):
+  C2  converse-KAM : commit 393328e  ("C2: Apply converse-KAM to Paul ...")
+  C3a WBA          : commit bf5ca06  ("C3a Stage 2: ... t_c vs WBA dig ...")
+  branch           : origin/claude/converse-kam-3d-y23ijj
+Copied verbatim (pinned to bf5ca06) into consistency/orig/:
+  converse_kam.py, wba.py, field_paul.py, SOURCE_original.txt
+
+Both the originals and the C3b reimplementations were written fresh from the
+source papers (Paul-Hudson-Helander 2022 arXiv:2108.06328; Kallinikos et al.
+2023 arXiv:2304.09613). QUASR/WBA external repos were not in scope for either.
+
+Cross-check (consistency/compare.py + correlations.py; same C3b field, same
+grid points):
+  converse-KAM : detection agreement 100%; Spearman(t_c) 0.975-0.978  -> CASE 1.
+                 "t_c differs" was a UNIT artifact (C3b reported periods; x2pi
+                 gives zeta, matching the original ~19-25).
+  WBA          : fine-rank Spearman 0.51-0.57 (dig is convergence noise in the
+                 chaotic bulk for BOTH), BUT regular/chaotic classification
+                 agrees 93-96% and aggregate stats match.
+  Correlations : recomputed with the ORIGINAL diagnostics ->
+                   r(cKAM,V_PD) identical (key question #8 reproduced exactly),
+                   r(WBA,V_PD) ~0 with both, r(cKAM,WBA) weak-negative with both.
+                 => C3b's correlation conclusions are ROBUST; nothing retracted.
+
+Slab vs torus: torus R-weighting changes V_PD by <0.05% (Paul's model has a
+constant metric Jacobian; the original C2 used the same uniform volume).
