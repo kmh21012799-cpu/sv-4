@@ -7,7 +7,8 @@ function make_all_figs()
 here = fileparts(mfilename('fullpath'));
 cd(here);
 
-fig1_threeaxis();    % 4x3 core panel (t_c / dig / chi)
+fig1_threeaxis();    % 4x3 core panel + companion profile
+fig1b_profile();     % profile alone (if figures go separately)
 fig2_transport();    % V_PD & DeltaT vs kperp
 fig3_correlation();  % r(cKAM,V_PD) vs kperp (Paul's expectation refuted)
 fig4_wba_tconv();    % WBA dig T-convergence (curves cross)

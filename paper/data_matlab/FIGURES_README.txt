@@ -11,13 +11,17 @@ or run any script on its own, e.g.  >> fig1_threeaxis
 
 Scripts
 -------
-  fig1_threeaxis.m   Core figure. 4 fields (rows m=4/12/20/36) x 3 columns:
-                     col1 converse-KAM t_c, col2 WBA dig (both 24x24 core
-                     grid, rho in [0.25,0.75]), col3 Temperature T (129x32,
-                     FULL domain rho in [0,1], zeta=0 slice, kperp=1e-6).
-                     t_c/dig share a colour scale per column; T shares 0..1
-                     across the four fields. The core band [0.25,0.75] is
-                     dashed on the T panels. Saves vector PDF + PNG.
+  fig1_threeaxis.m   Core figure (layout A): 4x3 maps + a companion profile.
+                     Rows m=4/12/20/36. col1 converse-KAM t_c, col2 WBA dig,
+                     col3 Temperature T -- all three now on the SAME core rho
+                     axis [0.25,0.75] (T restricted to the core; boundary layers
+                     cropped). T shares 0..1 across fields (no rescaling).
+                     Bottom row (spanning): angle-averaged <T>_theta(rho) for the
+                     four fields with DeltaT (computed from the data) in the
+                     legend -- m=4 flat, m=36 graded (0.040 -> 0.113).
+                     Saves vector PDF + PNG.
+  fig1b_profile.m    The profile panel alone (option B: Fig 1 maps + Fig 1b
+                     profile as separate figures). Same DeltaT legend.
   fig2_transport.m   V_PD and DeltaT vs kperp (four curves each). Transport
                      separates the fields: V_PD largest at m=4, DeltaT at m=36.
   fig3_correlation.m r(converse-KAM, V_PD) vs kperp. Stays weak, does not grow
