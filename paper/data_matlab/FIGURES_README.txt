@@ -11,9 +11,13 @@ or run any script on its own, e.g.  >> fig1_threeaxis
 
 Scripts
 -------
-  fig1_threeaxis.m   Core figure. 4 fields (rows m=4/12/20/36) x 3 indicators
-                     (cols: converse-KAM t_c, WBA dig, V_PD chi). Same grid,
-                     shared colour scale per column.
+  fig1_threeaxis.m   Core figure. 4 fields (rows m=4/12/20/36) x 3 columns:
+                     col1 converse-KAM t_c, col2 WBA dig (both 24x24 core
+                     grid, rho in [0.25,0.75]), col3 Temperature T (129x32,
+                     FULL domain rho in [0,1], zeta=0 slice, kperp=1e-6).
+                     t_c/dig share a colour scale per column; T shares 0..1
+                     across the four fields. The core band [0.25,0.75] is
+                     dashed on the T panels. Saves vector PDF + PNG.
   fig2_transport.m   V_PD and DeltaT vs kperp (four curves each). Transport
                      separates the fields: V_PD largest at m=4, DeltaT at m=36.
   fig3_correlation.m r(converse-KAM, V_PD) vs kperp. Stays weak, does not grow
